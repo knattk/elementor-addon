@@ -40,6 +40,7 @@ class PromotionList extends Widget_Base{
 				'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
 			]
 		);
+
     
         $this->add_control(
             'due_date',
@@ -49,7 +50,13 @@ class PromotionList extends Widget_Base{
             ]
         );
 
+        
+        
         $repeater = new \Elementor\Repeater();
+
+
+        
+
         $repeater->add_control(
                 'list_price_reg',
                 [
@@ -99,6 +106,10 @@ class PromotionList extends Widget_Base{
 
     $this->end_controls_section();
   }
+
+
+
+// RENDER
 
 protected function render() {
 

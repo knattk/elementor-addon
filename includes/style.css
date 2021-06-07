@@ -1,1 +1,256 @@
-.elementor-editor-active .promotion-group{display:block}.promotion-group{display:none}#infoItem li:not(:first-child){font-weight:300}.product-list p{line-height:1.3em!important;font-weight:300}.product-list strong{display:block;margin-bottom:8px;font-weight:500}.product-list ul{list-style:none;padding-left:0;font-family:Kanit}.flex-card-container{list-style-type:none;margin:0;padding:0;display:flex;flex-flow:row wrap;justify-content:flex-start}.flex-card-group{display:flex;flex-flow:column nowrap}.flex-card{padding:10px;background:#fff;display:flex;flex-flow:column nowrap;flex:1 0 auto;border-radius:5px}.flex-card-image{position:relative}.flex-card-image img{border-radius:5px;width:100%}.flex-card.discount-tag .discount{display:inline-block}.flex-card-image .discount{background:#eed183;color:#7d6011;display:none;padding:5px 10px;box-shadow:4px 4px 5px rgba(0,0,0,.2);font-size:1.2em;font-weight:700;position:absolute;top:0;left:0;margin-top:10%}.flex-card-heading{margin:0;font-size:1.2em;line-height:1.2em}.flex-card-content{display:flex;flex-direction:column;flex:1 0 auto;padding-top:20px}.flex-card-content .product-counter{font-size:.9em;margin-bottom:5px}.product-price-tag{position:absolute;display:inline-block;color:#fff;border-radius:10px;width:60%;text-align:center;padding:5px;left:0;right:0;bottom:0;margin-left:auto;margin-right:auto}.product-price-regular{font-weight:600;font-size:1.6em;line-height:1em;text-shadow:0 1px 1px rgba(0,0,0,.2)}.product-price-sale{font-size:.8em}@media screen and (min-width:768px){.product-price-regular{font-size:2em}.product-price-tag{width:40%}}.flex-card-content .product-star{float:right;color:#ffc400;font-size:1.2em;line-height:1em;display:none}.star-on .product-star{display:block!important}.flex-card-content p{margin:0;flex:1 0 auto;font-size:.9em;border-bottom:dashed 1px #ddd;padding-bottom:10px}.flex-card-button{text-decoration:none;color:#fff;padding:10px;text-align:center;display:block;margin-top:10px;width:100%;align-self:center;border-radius:5px}.flex-card-button:hover{color:#fff;background:rgba(0,0,0,.5);box-shadow:0 0 10px rgba(0,0,0,.1)}@media screen and (min-width:576px){.flex-card-heading{font-size:1.4em;line-height:1.4em}}.countdown-wrapper{display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;margin-right:auto;margin-left:auto}.countdown-item{flex-basis:0;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;text-align:center;border:1px solid #eaeaea;box-shadow:0 0 10px rgba(0,0,0,.1);border-radius:10px;margin:5px;padding:10px;font-family:Display;font-weight:200}.countdown-digits{display:block;font-size:45px;color:#9d1c00}.countdown-label{display:block;font-size:20px}@media screen and (max-width:575.98px){.countdown-digits{font-size:35px;line-height:1.2}.countdown-label{font-size:16px}}
+.elementor-editor-active .promotion-group {
+  display: block;
+}
+.promotion-group {
+  display: none;
+}
+#infoItem li:not(:first-child) {
+  font-weight: 300;
+}
+.product-list p {
+  line-height: 1.3em !important;
+  font-weight: 300;
+}
+.product-list strong {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.product-list ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+/* Promotion Card */
+:root{
+--card-border-radius:6px;
+--card-box-shadow:0 2px 4px rgba(0,0,0,.2);
+}
+.promotion-card-container {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+}
+.promotion-card-image {
+display: block;
+position: relative;
+}
+.promotion-card-image:first-child img {
+  width:100%;
+}
+.promotion-card-image .image{
+display: block;
+position: relative;
+margin:0;
+}
+.card-notification{
+  display: none;
+  background: #ffffffe8;
+  color: #cd0000;
+  padding: .35rem 1rem;
+  text-align: center;
+  position: absolute;
+  right: 0;
+  bottom: 1rem;
+  border-radius: 6px 0 0 7px;
+} 
+.card-notification span{
+  animation: blinking 1s infinite;
+}
+.featured.noti .card-notification{
+  display: block;
+}
+.featured h3::before{
+  content: "ขายดี";
+  background: #CD0000;
+  color: #fff;
+  font-size: 0.8em;
+  padding: .05rem .25rem;
+  border-radius: 4px;
+  margin-right: .25rem;
+}
+
+.card-content{
+padding:.75rem 1rem;
+}
+.card-content h3{
+margin:0;
+margin-bottom:5px;
+font-size:1.1em;
+font-weight:400;
+line-height:1.2em;
+color:#222;
+}
+.card-info{
+display:flex;
+justify-content:space-between;
+border-bottom:1px solid #f3f3f3;
+padding:0 0 .35rem;
+font-weight:300;
+color:#969696;
+}
+.card-info-left{
+font-size:0.9em;
+font-weight:200;
+}
+.info{
+align-items: flex-start;
+display: flex;
+}
+.card-list{
+padding-top: .35rem;
+font-size: 0.9em;
+font-weight: 200;
+color:#969696;
+}
+.card-footer{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:.35rem 0 0;
+}
+.card-footer-pricing{
+display:flex;
+flex-direction:column;
+}
+.card-footer-button{
+display:flex;
+}
+/* Button */
+.card-button{
+  font-size:1.15em;
+  padding:.5rem 1.5rem;
+  border-radius:var(--card-border-radius);
+  box-shadow:var(--card-box-shadow)!important;
+}
+.card-button:hover{
+  color: #fff;
+  transition: all 0.5s;
+}
+/* Price */
+.price-regular{
+text-decoration: line-through;
+font-size:0.9em;
+font-weight:200;
+color:#969696;
+}
+.price-regular:before{
+content:"ปกติ ";
+}
+.price-sale{
+color:#CD0000;
+font-size:1.2em;
+}
+.price-sale:after{
+content:" บาท";
+}
+/* Star */
+.promotion-star{
+  color: #FFC107;
+  display: none;
+}
+.star-on .promotion-star{
+display: block;
+}
+@keyframes blinking {
+  0%{
+      opacity: 0;
+  }
+}
+
+
+/* Countdown */
+.countdown-wrapper {
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  margin-right: auto;
+  margin-left: auto;
+}
+.countdown-item {
+  flex-basis: 0;
+  -webkit-box-flex: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  text-align: center;
+  border: 1px solid #eaeaea;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin: 5px;
+  padding: 10px;
+  font-weight: 200;
+}
+.countdown-digits {
+  display: block;
+  font-size: 45px;
+  color: #9d1c00;
+}
+.countdown-label {
+  display: block;
+  font-size: 20px;
+}
+@media screen and (max-width: 575.98px) {
+  .countdown-digits {
+      font-size: 35px;
+      line-height: 1.2;
+  }
+  .countdown-label {
+      font-size: 16px;
+  }
+}
+
+/* ----- Form Promotion ----- */
+.em-promotion{
+    margin-bottom: 20px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    box-shadow:0 0 5px rgba(0,0,0,.1);
+    transition: all 0.3s ease;
+    width: 100%;
+}
+.em-promotion.selected{
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.25);
+    border: 2px solid #BB0000;
+}
+.em-promotion .columns{
+  padding:1rem;
+  display: flex;
+  justify-content:space-between;
+}
+.em-promotion.selected .name .icon{
+    visibility: visible;
+}
+
+/* Name */
+.em-promotion .name{
+  border-bottom:1px solid #eaeaea;
+}
+.em-promotion .name .icon{
+  flex:none;
+  width:10%;
+  visibility: hidden;
+  text-align: right;
+  padding-left: 5px;
+}
+
+/* Info */
+.em-promotion .columns.info{
+  padding: 0.5rem 1rem;
+  align-items: center;
+}
+
+.em-promotion .badge{
+  color: #BB0000;
+  border:1px solid #BB0000;
+  padding:0.025em 0.5em;
+  border-radius:6px;
+}
+
+/* Price */
+.em-promotion .price-regular{
+  margin-right:0.5rem;
+}

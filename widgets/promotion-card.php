@@ -38,6 +38,7 @@ class PromotionCard extends Widget_Base{
 
   protected function _register_controls(){
 
+    /* Tab Title */
     $this->start_controls_section(
 		'content_section',
 		[
@@ -52,7 +53,7 @@ class PromotionCard extends Widget_Base{
                 'label' => __( 'Button Label', 'card-promotion' ),
                 'type' => \Elementor\Controls_Manager::TEXT,
                 'placeholder' => __( 'Enter your title', 'plugin-name' ),
-                'default' => 'จองโปรนี้',
+                'default' => 'คลิกจองโปร',
             ]
         );  
         $this->add_control(
@@ -80,25 +81,34 @@ class PromotionCard extends Widget_Base{
                 'default'   => 'discount-tag'
 			]
         );
-        $this->add_control(
-			'product_price_tag',
-			[
-				'label' => __( 'Price Tag', 'card-promotion-domain' ),
-				'type' => \Elementor\Controls_Manager::SWITCHER,
-                'return_value' => 'price-tag'
-			]
-		);
+
         $this->add_control(
 			'product_star',
 			[
-				'label' => __( 'Star', 'card-promotion-domain' ),
+				'label' => __( 'Rating', 'card-promotion-domain' ),
 				'type' => \Elementor\Controls_Manager::SWITCHER,
                 'return_value' => 'star-on',
                 'default'   => 'star-on'
 			]
 		);
+        $this->add_control(
+			'product_notification',
+			[
+				'label' => __( 'Notification', 'card-promotion-domain' ),
+				'type' => \Elementor\Controls_Manager::SWITCHER,
+                'return_value' => 'noti',
+                'default'   => 'noti'
+			]
+		);
         
+
+        
+        
+    /* Repeater Setup */    
+
         $repeater = new \Elementor\Repeater();
+
+
         $repeater->add_control(
                 'product-title',
                 [
@@ -115,8 +125,12 @@ class PromotionCard extends Widget_Base{
             [
                 'label' => __( 'ภาพสินค้า', 'card-promotion' ),
                 'type' => \Elementor\Controls_Manager::MEDIA,
+                'default' => [
+					'url' => \Elementor\Utils::get_placeholder_image_src(),
+				],
             ]
         );
+
 
         $repeater->add_control(
                 'product-list', [
@@ -124,10 +138,8 @@ class PromotionCard extends Widget_Base{
                     'type' => \Elementor\Controls_Manager::TEXTAREA,
                     'language' => 'html',
                     'rows' => 10,
-                    'default' => 'รายการสินค้า',
                 ]
         );
-
         $repeater->add_control(
             'product-discount',
             [
@@ -139,7 +151,6 @@ class PromotionCard extends Widget_Base{
                 'default' => 50,
             ]
         );
-
         $repeater->add_control(
             'product-counter',
             [
@@ -151,7 +162,6 @@ class PromotionCard extends Widget_Base{
                 'default' => 2414,
             ]
         );
-
         $repeater->add_control(
             'product-price-sale',
             [
@@ -162,7 +172,6 @@ class PromotionCard extends Widget_Base{
                 'step' => 1,
             ]
         );
-
         $repeater->add_control(
             'product-price-regular',
             [
@@ -173,7 +182,6 @@ class PromotionCard extends Widget_Base{
                 'step' => 1,
             ]
         );
-
         $repeater->add_control(
 			'product_featured',
 			[
@@ -183,6 +191,9 @@ class PromotionCard extends Widget_Base{
 			]
 		);
 
+         
+    /* Add Repeater */
+        
         $this->add_control(
                 'list',
                 [
@@ -197,7 +208,6 @@ class PromotionCard extends Widget_Base{
                     ]
                 ]
         );
-
         $this->add_control(
 			'important_note',
 			[
@@ -209,10 +219,16 @@ class PromotionCard extends Widget_Base{
 			]
 		);
     
+
     $this->end_controls_section();
 
-    // Style
-    $this->start_controls_section( //Card
+
+
+    /* ---------- STYLE ---------- */
+
+
+    // CARD -----------------------------------------
+    $this->start_controls_section(
         'style_card',
         [
             'label' => __( 'Card', 'card-promotion' ),
@@ -226,7 +242,7 @@ class PromotionCard extends Widget_Base{
                 'type' 			=> Controls_Manager::COLOR,
                 'default' => '#ffffff',
                 'selectors'		=> [
-                    '{{WRAPPER}} .flex-card' => 'background-color: {{VALUE}};'
+                    '{{WRAPPER}} .promotion-card' => 'background-color: {{VALUE}};'
                 ]
             ]
         );   
@@ -240,7 +256,7 @@ class PromotionCard extends Widget_Base{
 				'step' => 1,
                 'default' => 100,
                 'selectors'		=> [
-                    '{{WRAPPER}} .flex-card-group' => 'flex: 1 1 {{SIZE}}%;'
+                    '{{WRAPPER}} .promotion-card' => 'flex: 1 1 {{SIZE}}%;'
                   ]
 			]
         );
@@ -254,47 +270,62 @@ class PromotionCard extends Widget_Base{
 				'step' => 1,
                 'default' => 100,
                 'selectors'		=> [
-                    '{{WRAPPER}} .flex-card-group' => 'max-width:{{SIZE}}%;'
+                    '{{WRAPPER}} .promotion-card' => 'max-width:{{SIZE}}%;'
                   ]
 			]
         );
+        
         $this->add_responsive_control(
-			'card-padding',
+			'card-margin',
 			[
-				'label' => __( 'Padding', 'card-promotion' ),
+				'label' => __( 'Margin', 'card-promotion' ),
 				'type' => Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em', 'rem' ],
                 'default' => [
-                    'top' => '5',
-                    'right' => '5',
-                    'bottom' => '5',
-                    'left' => '5',
-                    'unit' => 'px',
+                    'top' => '0',
+                    'right' => '0',
+                    'bottom' => '.75',
+                    'left' => '0',
+                    'unit' => 'rem',
                     'isLinked' => true,
                 ],
 				'selectors' => [
-					'{{WRAPPER}} .flex-card-group' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					'{{WRAPPER}} .promotion-card' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
+        );
+        $this->add_responsive_control(
+            'card_radius',
+            [
+                'label' => __( 'Border Radius', 'card-promotion' ),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => [ 'px', '%', 'em', 'rem' ],
+                'selectors' => [
+                    '{{WRAPPER}} .promotion-card' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
         );
         $this->add_group_control(
 			\Elementor\Group_Control_Box_Shadow::get_type(),
 			[
 				'name' => 'box_shadow',
 				'label' => __( 'Box Shadow', 'card-promotion' ),
-				'selector' => '{{WRAPPER}} .flex-card',
+				'selector' => '{{WRAPPER}} .promotion-card',
 			]
         );
+        
     $this->end_controls_section();
 
-    $this->start_controls_section( //Content
+
+    // CONTENT -----------------------------------------
+    
+    $this->start_controls_section(
         'style_content',
         [
             'label' => __( 'Content', 'card-promotion' ),
             'tab' => \Elementor\Controls_Manager::TAB_STYLE,
         ]
     );
-
     $this->add_responsive_control(
         'content-padding',
         [
@@ -302,10 +333,12 @@ class PromotionCard extends Widget_Base{
             'type' => Controls_Manager::DIMENSIONS,
             'size_units' => [ 'px', '%', 'em', 'rem' ],
             'selectors' => [
-                '{{WRAPPER}} .flex-card-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                '{{WRAPPER}} .promotion-card-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
             ],
         ]
     );
+    //TITLE
+
     
     $this->add_control(
         'style_content_title',
@@ -321,7 +354,7 @@ class PromotionCard extends Widget_Base{
             Group_Control_Typography::get_type(),
             [
                 'name' => 'text_title',
-                'selector' => '{{WRAPPER}} .flex-card-heading',
+                'selector' => '{{WRAPPER}} .card-title',
                 'separator'		=> 'after'
             ]
         );
@@ -333,11 +366,12 @@ class PromotionCard extends Widget_Base{
                 'type' 			=> Controls_Manager::COLOR,
                 'default'       => '#000',
                 'selectors'		=> [
-                    '{{WRAPPER}} .flex-card-heading' => 'color: {{VALUE}};'
+                    '{{WRAPPER}} .card-title' => 'color: {{VALUE}};'
                 ]
             ]
         );
 
+        // COUNTER
         $this->add_control(
             'style_content_counter',
             [
@@ -350,7 +384,7 @@ class PromotionCard extends Widget_Base{
             Group_Control_Typography::get_type(),
             [
                 'name' => 'card-counter',
-                'selector' => '{{WRAPPER}} .product-counter',
+                'selector' => '{{WRAPPER}} .card-info-left',
                 'separator'		=> 'after'
             ]
         );
@@ -361,7 +395,7 @@ class PromotionCard extends Widget_Base{
                 'type' 			=> Controls_Manager::COLOR,
                 'default'       => '#000',
                 'selectors'		=> [
-                    '{{WRAPPER}} .product-counter' => 'color: {{VALUE}};'
+                    '{{WRAPPER}} .card-info-left' => 'color: {{VALUE}};'
                 ]
             ]
         );
@@ -380,11 +414,11 @@ class PromotionCard extends Widget_Base{
             Group_Control_Typography::get_type(),
             [
                 'name' => 'card-promotion',
-                'selector' => '{{WRAPPER}} .flex-card-content p',
+                'selector' => ['{{WRAPPER}} .card-list',
+                                '{{WRAPPER}} .card-footer-pricing span'],
                 'separator'		=> 'after'
             ]
         );
-
         $this->add_control(
             'product_list_color',
             [
@@ -392,14 +426,18 @@ class PromotionCard extends Widget_Base{
                 'type' 			=> Controls_Manager::COLOR,
                 'default'       => '#5F5F5F',
                 'selectors'		=> [
-                    '{{WRAPPER}} .flex-card-content p' => 'color: {{VALUE}};'
+                    '{{WRAPPER}} .card-list' => 'color: {{VALUE}};',
                 ]
             ]
         );
+        
+
+
 
     $this->end_controls_section();
 
-    $this->start_controls_section( //Price tag
+    // PRICE TAG
+    $this->start_controls_section(
         'style_price_tag',
         [
             'label' => __( 'Price Tag', 'card-promotion' ),
@@ -418,7 +456,6 @@ class PromotionCard extends Widget_Base{
                 ]
             ]
         ); 
-
         $this->add_control(
             'price_tag-color',
             [
@@ -430,7 +467,6 @@ class PromotionCard extends Widget_Base{
                 ]
             ]
         );
-
         $this->add_group_control(
             Group_Control_Typography::get_type(),
             [
@@ -438,7 +474,6 @@ class PromotionCard extends Widget_Base{
                 'selector' => '{{WRAPPER}} .product-price-tag',
             ]
         );
-
         $this->add_responsive_control(
             'price_tag-padding',
             [
@@ -450,7 +485,6 @@ class PromotionCard extends Widget_Base{
                 ],
             ]
         );
-
         $this->add_responsive_control(
             'price_tag_radius',
             [
@@ -462,7 +496,6 @@ class PromotionCard extends Widget_Base{
                 ],
             ]
         );
-
         $this->add_group_control(
 			\Elementor\Group_Control_Box_Shadow::get_type(),
 			[
@@ -472,9 +505,12 @@ class PromotionCard extends Widget_Base{
 			]
         );
 
+        
     $this->end_controls_section();
 
-    $this->start_controls_section( //Button
+
+    // BUTTON
+    $this->start_controls_section(
         'style_button',
         [
             'label' => __( 'Button', 'card-promotion' ),
@@ -487,13 +523,12 @@ class PromotionCard extends Widget_Base{
             [
                 'label' 		=> __( 'Background', 'card-promotion' ),
                 'type' 			=> Controls_Manager::COLOR,
-                'default' => '#9B0000',
+                'default' => '#CD0000',
                 'selectors'		=> [
-                    '{{WRAPPER}} .flex-card-button' => 'background-color: {{VALUE}};'
+                    '{{WRAPPER}} .card-button' => 'background-color: {{VALUE}};'
                 ]
             ]
         ); 
-
         $this->add_control(
             'button-color',
             [
@@ -501,19 +536,17 @@ class PromotionCard extends Widget_Base{
                 'type' 			=> Controls_Manager::COLOR,
                 'default'       => '#fff',
                 'selectors'		=> [
-                    '{{WRAPPER}} .flex-card-button' => 'color: {{VALUE}};'
+                    '{{WRAPPER}} .card-button' => 'color: {{VALUE}};'
                 ]
             ]
         );
-
         $this->add_group_control(
             Group_Control_Typography::get_type(),
             [
                 'name' => 'button-text',
-                'selector' => '{{WRAPPER}} .flex-card-button',
+                'selector' => '{{WRAPPER}} .card-button',
             ]
         );
-
         $this->add_responsive_control(
             'button-padding',
             [
@@ -521,11 +554,10 @@ class PromotionCard extends Widget_Base{
                 'type' => Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em', 'rem' ],
                 'selectors' => [
-                    '{{WRAPPER}} .flex-card-button' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .card-button' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
-
         $this->add_responsive_control(
             'button-border_radius',
             [
@@ -533,7 +565,7 @@ class PromotionCard extends Widget_Base{
                 'type' => Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em', 'rem' ],
                 'selectors' => [
-                    '{{WRAPPER}} .flex-card-button' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .card-button' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -551,13 +583,12 @@ class PromotionCard extends Widget_Base{
                 [
                     'label' 		=> __( 'Background', 'card-promotion' ),
                     'type' 			=> Controls_Manager::COLOR,
-                    'default' => '#9B0000',
+                    'default' => '#a00000',
                     'selectors'		=> [
-                        '{{WRAPPER}} .flex-card-button:hover' => 'background-color: {{VALUE}};'
+                        '{{WRAPPER}} .promotion-card-button:hover' => 'background-color: {{VALUE}};'
                     ]
                 ]
             ); 
-
             $this->add_control(
                 'button-color_hover',
                 [
@@ -565,54 +596,94 @@ class PromotionCard extends Widget_Base{
                     'type' 			=> Controls_Manager::COLOR,
                     'default'       => '#fff',
                     'selectors'		=> [
-                        '{{WRAPPER}} .flex-card-button:hover' => 'color: {{VALUE}};'
+                        '{{WRAPPER}} .promotion-card-button:hover' => 'color: {{VALUE}};'
                     ]
                 ]
             );
+
         
     $this->end_controls_section();
 
+
   }
+
+// RENDER
 
 protected function render() {
 	
   $settings = $this->get_settings_for_display();
 
   if ( $settings['list'] ) {
-    echo '<div class="flex-card-container">';
+
+    
+    
+    echo '<div class="promotion-card-container">';
+    
     $card_id = 0;
         foreach (  $settings['list'] as $item ) {
         
-             echo    '<div class="flex-card-group" ><div class="flex-card ' . $item['product_featured'] . ' ' .  $settings['product_discount_tag'] . ' ' . $settings['product_star'] . '" id="promotion-item-' . $card_id . '">';
+             echo    '
+                        <div class="promotion-card ' . $item['product_featured'] . ' ' .  $settings['product_discount_tag'] . ' ' .  $settings['product_notification'] . ' ' . $settings['product_star'] . '" id="promotion-item-' . $card_id . '">';
             
             
 
-                echo    '<div class="flex-card-image">
-                            <img src=" ' . $item['product-image']['url'] . '" alt="' . $item['product-title'] . '">
-                            <div class="discount">-' . $item['product-discount'] . '%</div>';
+                echo    '<div class="promotion-card-image">
+                            <figure class="image">
+                            <img src=" ' . $item['product-image']['url'] . '" alt="' . $item['product-title'] . '" class="image">
+                            </figure>';
 
-                            if ( $settings['product_price_tag'] == 'price-tag') {
-                                    echo    '<div class="product-price-tag">
-                                                <div class="product-price-regular">' . number_format($item['product-price-sale']) . '.-</div>
-                                                <div class="product-price-sale">จากราคาปกติ ' . number_format($item['product-price-regular']) . '.-</div>
-                                            </div>';
+                            if ( $settings['product_notification'] == 'noti') {
+                                echo    '<div class="card-notification"><span class="stock-number">กำลังจะหมด</span></div>';
                             }
 
-                            
                 echo    '</div>
+                        <div class="promotion-card-content">
+                            <div class="card-content">
+                                <h3 class="card-title">' . $item['product-title'] . '</h3>
 
-                        <div class="flex-card-content">
-                            <h3 class="flex-card-heading">' . $item['product-title'] . '</h3>
-                            <div class="product-counter">จองแล้ว <span class="count-number">' . number_format($item['product-counter']) . '</span> เซต<span class="product-star">★★★★★</span></div>
-                            
-                            <p>' . $item['product-list'] . '</p>
-                            <div class="' . $settings['product-class'] . '">
-                                <a href="' . $settings['product-link'] . '" class="flex-card-button" id="select-item-'. $card_id .'">' . $settings['product-button'] . '</a>
+                                <div class="card-info">
+                                    <div class="card-info-left">
+                                        จองแล้ว <span class="count-number">' . number_format($item['product-counter']) . '</span> เซต
+                                    </div>
+                                    
+                                    <div class="card-info-right">';
+
+                                        if ( $settings['product_star'] == 'star-on') {
+                                            echo    '<span class="promotion-star">★★★★★</span>';
+                                        }
+                                        
+                                echo '</div>
+                                </div>';
+
+                                if ( $item['product-list'] ) {
+                                    echo    '<div class="card-list">' . $item['product-list'] . '</div>';
+                                }
+                                
+                                    
+                                echo '
+
+                                <div class="card-footer">
+                                    <div class="card-footer-pricing">
+                                        <span class="price-sale">'; if($item['product-price-sale']){echo number_format($item['product-price-sale']);} echo '</span>
+                                        <span class="price-regular">'; if($item['product-price-regular']){echo number_format($item['product-price-regular']);} echo '</span> 
+                                    </div>
+
+                                    <div class="card-footer-button';
+                                    
+                                    if($settings['product-class']){
+                                        echo ' ' . $settings['product-class'];
+                                    }
+
+                                    echo '"> 
+                                        <a href="' . $settings['product-link'] . '" class="card-button" id="select-item-'. $card_id .'">' . $settings['product-button'] . '</a>
+                                    </div>
+                                </div>
                             </div>
-                        </div>';
+
+
+                        </div></div>';
             
 
-            echo    '</div></div>';
 
             $card_id = ($card_id + 1);
 

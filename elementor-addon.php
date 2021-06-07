@@ -3,7 +3,7 @@
 * Plugin Name: Elementor Addon
 * Plugin URI: https://khwaan.com
 * Description: ส่วนเสริมของ Elementor
-* Version: 1.1
+* Version: 1.4
 * Author: Nattakan C.
 * Author URI: https://khwaan.com
 **/
@@ -25,6 +25,7 @@ class Widget_Loader{
   private function include_widgets_files(){
     require_once(__DIR__ . '/widgets/promotion-card.php');
     require_once(__DIR__ . '/widgets/promotion-list.php');
+    require_once(__DIR__ . '/widgets/promotion-form.php');
     require_once(__DIR__ . '/widgets/countdown-auto.php');
   }
 
@@ -34,8 +35,9 @@ class Widget_Loader{
 
     \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PromotionCard());
     \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PromotionList());
+    \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PromotionForm());
     \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\CountdownAuto());
-    
+  
   }
 
   public function widget_styles() {

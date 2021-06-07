@@ -314,6 +314,9 @@ class CountdownAuto extends Widget_Base{
 		$this->end_controls_section();
     }
     
+
+    // RENDER
+
     protected function render() {
         
         $settings = $this->get_settings_for_display();
