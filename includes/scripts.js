@@ -1,110 +1,11 @@
 "use strict";
 
-/*------------- Promotion List => Thankyou --------------*/
-var promotionList = function () {
-  localStorage.clear();
+// ---------------------------------------
+//
+//  WIDGET : PromotionCard
+//
+// ---------------------------------------
 
-  var strings = {
-    // Form field
-    field1: "form-field-field_1",
-    field2: "form-field-field_2",
-    field3: "form-field-field_3",
-
-    // Form ID
-    formId: "form_thank",
-
-    //Radio
-    radioGroup: "elementor-field-type-radio",
-    radioSubGroup: "elementor-field-subgroup",
-    radioOptions: "elementor-field-option",
-
-    // Promotion (Hidden)
-    promoItem: "promo-",
-    productList: "product-list",
-    productPriceReg: "product-price-reg",
-    productPriceSale: "product-price-sale",
-    productDueDate: "promotion-date",
-  };
-
-  var optionIndex;
-
-  // Radio
-  let radioLen = null;
-  let groupRadio = document.getElementsByClassName(strings.radioGroup);
-
-  if (groupRadio.length > 0) {
-    radioLen = groupRadio[0].getElementsByClassName(strings.radioOptions)
-      .length;
-  }
-
-  // EVENT : After form submission.
-  const getFormId = document.getElementById(strings.formId);
-
-  // Check Form Exit
-  if (getFormId !== null) {
-    getFormId.addEventListener("submit", function () {
-      // Form
-      var field1,
-        field2 = document.getElementById(strings.field2).value,
-        field3 = document.getElementById(strings.field3).value;
-
-      // check if type is not Radio
-
-      if (radioLen >= 1) {
-        // type is Radio
-
-        var radios = document.getElementsByName("form_fields[field_1]"); // 0, 1, 2
-
-        for (let i = 0; i < radios.length; i++) {
-          if (radios[i].checked) {
-            optionIndex = i; // 0, 1, 2
-            field1 = document.getElementById(strings.field1 + "-" + i).value;
-
-            break;
-          }
-        }
-      } else {
-        // type is Dropdown
-
-        optionIndex = document.getElementById(strings.field1).selectedIndex; // 0, 1, 2
-        field1 = document.getElementById(strings.field1).value;
-      }
-
-      var itemIndex = optionIndex + 1;
-
-      // Promotion (Hide)
-      var proList = document.getElementById(strings.promoItem + itemIndex),
-        proListItem = proList.getElementsByClassName(strings.productList)[0]
-          .innerHTML,
-        priceReg = proList.getElementsByClassName(strings.productPriceReg)[0]
-          .innerHTML,
-        priceSale = proList.getElementsByClassName(strings.productPriceSale)[0]
-          .innerHTML,
-        dueDate = document.getElementById(strings.productDueDate).innerText;
-
-      // JSON
-      const formData = {
-        promotion: {
-          title: field1,
-          item: proListItem,
-          pricereg: priceReg,
-          pricesale: priceSale,
-        },
-        duedate: dueDate,
-        name: field2,
-        phone: field3,
-      };
-
-      // set localStorage
-      localStorage.setItem("formPass", JSON.stringify(formData));
-      // Redirect after form submission
-      window.location.href = document.location.origin + "/thanks";
-    }); // EVENT
-  }
-};
-
-
-/* ---------- Card Promotion ---------- */
 var promotioncardCounter = function () {
   
   var promotionCard = [].slice.call(document.querySelectorAll('[id^="select-item"]'));
@@ -312,7 +213,12 @@ var promotioncardCounter = function () {
 
 };
 
-/* ---------- Countdown Auto ------------ */
+// ---------------------------------------
+//
+//  WIDGET : Countdown Auto
+//
+// ---------------------------------------
+
 var countdownAuto = function () {
   (() => {
     clearInterval(x);
@@ -363,26 +269,42 @@ var countdownAuto = function () {
   })();
 };
 
-/*-------------- Promotion Form --------------*/
+// ---------------------------------------
+//
+//  WIDGET : PromotionForm
+//
+// ---------------------------------------
+
 
 var promotionForm = function () {
+
+  // --------------------------------------- 
+  //
+  // UPDATE SELECTED ITEM TO "field_1"
+  // 
+  // ---------------------------------------
+
+ 
 
   // Check if exit
   if(document.getElementById('form-field-field_1') && document.querySelector('.em-promotion')){
 
     document.querySelector('.em-promotion').classList.add('selected');
+
+    //Copy selected item to the Form
+    document.getElementById('form-field-field_1').value = document.querySelector('.em-promotion').querySelector('.name').innerText;
     
     document.getElementById('em-promotions').addEventListener("click", function(e){
   
-      // Clear
+      // Clear .selected
       let doms = document.querySelectorAll('.em-promotion');
-          
+
       [].forEach.call(doms, function(dom) {
         // do whatever
         dom.classList.remove('selected');
       });
       
-      if (e.target.closest(".em-promotion")!== null){
+      if (e.target.closest(".em-promotion") !== null){
          
         //Add .selected
         e.target.closest(".em-promotion").classList.add("selected");
@@ -394,22 +316,117 @@ var promotionForm = function () {
     })
   }
 
+  // ---------------------------------------
+  //
+  //  CREATE JSON AND REDIRECT AFTER FORM SUBMISSION
+  //
+  // ---------------------------------------
+
+  // CLEAR LOCAL STORAGE
+  window.localStorage.removeItem('formOutput');
+
+  // DOM
+  var strings = {
+    // Form field
+    field1: "form-field-field_1", // Promotion
+    field2: "form-field-field_2", // Name
+    field3: "form-field-field_3", // Phone
+  }
+
+  // EVENT LISTENER
+
+      // get form
+        // check form
+        var checkFormId = function (){
+          if (document.getElementById("form-thank") != null){
+            return "form-thank";
+          } else if (document.getElementById("form_thank") != null){
+            return "form_thank";
+          } else {
+            return null;
+          }
+        }
+
+        if (checkFormId() != null ){
+
+          // when click submit button
+          document.getElementById(checkFormId()).addEventListener("submit", function(){
+
+            // find selected item
+            let selectedItem = document.querySelector('.selected'),
+            promotionTitle = selectedItem.querySelector('.pro').innerText,
+            regularPrice = parseInt(selectedItem.querySelector('.price-regular').innerText.replace(/\,/g,'')),
+            salePrice = parseInt(selectedItem.querySelector('.price-sale').innerText.replace(/\,/g,''));
+
+            // get field value
+            let field2 = document.getElementById("form-field-field_2").value, // name
+                field3 = document.getElementById("form-field-field_3").value; // phone
+
+
+            // JSON DATA SET
+            let formData = {
+              url: location.protocol + '//' + location.host + location.pathname,
+              promotion: {
+                title: promotionTitle,
+                regularprice: regularPrice,
+                saleprice: salePrice,
+              },
+              customer:{
+                name: field2,
+                phone: field3,
+              }
+            };
+
+            // LOCAL STORAGE
+            localStorage.setItem("formOutput", JSON.stringify(formData));
+            // COMMAND REDIRECT
+            //window.location.href = document.location.origin + "/thanks";
+
+          })// End Even Listener
+
+
+
+        }
 }
+
+// ---------------------------------------
+//
+//  WIDGET : FormOutput
+//
+// ---------------------------------------
+
+var formOutput = function () {
+
+  // Handle JSON
+  const formData = JSON.parse(localStorage['formOutput']);
+
+  // Check if not empty
+  function checkBlank(field){
+    return field.length == 0 ? '-' : field;
+  }
+  
+  // Add commas to numer
+  var addCommas = (number) => {
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+  
+  // DOM
+  document.getElementById("em-output-pro").innerHTML = checkBlank(formData.promotion.title);
+  document.getElementById("em-output-discount").innerHTML = `รวมส่วนลด<span>-${checkBlank(addCommas(parseInt(formData.promotion.regularprice) - parseInt(formData.promotion.saleprice)))}</span>`;
+  document.getElementById("em-output-name").innerHTML = `คุณ ${checkBlank(formData.customer.name)}`;
+  document.getElementById("em-output-phone").innerHTML = `เบอร์ติดต่อ ${checkBlank(formData.customer.phone)}`;
+  
+  // DOM - Button
+  document.getElementById("share-facebook").setAttribute('href', 'https://www.facebook.com/sharer/sharer.php?u=' + formData.url);
+  document.getElementById("share-line").setAttribute('href', 'https://social-plugins.line.me/lineit/share?url=' + formData.url);
+
+
+};
 
 /*-------------- Handler --------------*/
 
 window.addEventListener("DOMContentLoaded", (event) => {
   jQuery(window).on("elementor/frontend/init", () => {
-    const promotionListHandler = ($element) => {
-      elementorFrontend.elementsHandler.addHandler(promotionList, {
-        $element,
-      });
-    };
-
-    elementorFrontend.hooks.addAction(
-      "frontend/element_ready/promotion-list.default",
-      promotionListHandler
-    );
 
     const promotioncardHandler = ($element) => {
       elementorFrontend.elementsHandler.addHandler(promotioncardCounter, {
@@ -441,5 +458,16 @@ window.addEventListener("DOMContentLoaded", (event) => {
       "frontend/element_ready/countdown-auto.default",
       countdownAutoHandler
     );
+
+    const formOutputHandler = ($element) => {
+      elementorFrontend.elementsHandler.addHandler(formOutput, {
+        $element,
+      });
+    };
+    elementorFrontend.hooks.addAction(
+      "frontend/element_ready/form-output.default",
+      formOutputHandler
+    );
+
   });
 });
