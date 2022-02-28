@@ -3,7 +3,7 @@
 * Plugin Name: Elementor Addon
 * Plugin URI: https://khwaan.com
 * Description: ส่วนเสริมของ Elementor
-* Version: 2.0
+* Version: 3.0
 * Author: Nattakan C.
 * Author URI: https://khwaan.com
 **/
@@ -24,7 +24,7 @@ class Widget_Loader{
 	
   private function include_widgets_files(){
     require_once(__DIR__ . '/widgets/promotion-card.php');
-    require_once(__DIR__ . '/widgets/promotion-form.php');
+    require_once(__DIR__ . '/widgets/promotion-field.php');
     require_once(__DIR__ . '/widgets/countdown-auto.php');
     require_once(__DIR__ . '/widgets/form-output.php');
   }
@@ -34,7 +34,7 @@ class Widget_Loader{
     $this->include_widgets_files();
 
     \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PromotionCard());
-    \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PromotionForm());
+    \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PromotionField());
     \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\CountdownAuto());
     \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\FormOutput());
   
@@ -48,6 +48,10 @@ class Widget_Loader{
   public function widget_scripts() {
 
 		wp_register_script( 'scripts-js', plugins_url( '/includes/scripts.js', __FILE__ ) );
+		wp_register_script( 'countdown-js', plugins_url( '/includes/countdown-auto.js', __FILE__ ) );
+		wp_register_script( 'form-output-js', plugins_url( '/includes/form-output.js', __FILE__ ) );
+		wp_register_script( 'promotion-card-js', plugins_url( '/includes/promotion-card.js', __FILE__ ) );
+		wp_register_script( 'promotion-field-js', plugins_url( '/includes/promotion-field.js', __FILE__ ) );
 
 	}
 
