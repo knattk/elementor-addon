@@ -29,10 +29,10 @@ class CountdownAuto extends Widget_Base{
     }
 
     public function get_style_depends() {
-        return ['style-css'];
+        return ['elmta-style-css'];
     }
     public function get_script_depends() {
-        return ['scripts-js'];
+        return ['elmta-countdown-auto-js'];
     }
 
     public function get_categories(){
@@ -43,12 +43,19 @@ class CountdownAuto extends Widget_Base{
 		return [ 'countdown', 'number', 'timer', 'time', 'date', 'evergreen' ];
 	}
 
-
+	/*
+    *
+    *
+    * STYE
+    * CONTROLLER
+    *
+    *
+    */
     protected function _register_controls() {
-		
-
-        // STYLE 
-
+        
+		/* 
+			Boxes 
+		*/
 		$this->start_controls_section(
 			'section_box_style',
 			[
@@ -94,6 +101,7 @@ class CountdownAuto extends Widget_Base{
 			[
 				'label' => __( 'Background Color', 'elementor-pro' ),
 				'type' => Controls_Manager::COLOR,
+				'default' => '#ffffff',
 				'selectors' => [
 					'{{WRAPPER}} .countdown-item' => 'background-color: {{VALUE}};',
 				],
@@ -159,13 +167,16 @@ class CountdownAuto extends Widget_Base{
 				'type' => Controls_Manager::DIMENSIONS,
 				'size_units' => [ 'px', '%', 'em' ],
 				'selectors' => [
-					'{{WRAPPER}} .elementor-countdown-item' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					'{{WRAPPER}} .countdown-item' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
 		);
 
 		$this->end_controls_section();
 
+		/* 
+			Content 
+		*/
 		$this->start_controls_section(
 			'section_content_style',
 			[
@@ -187,6 +198,7 @@ class CountdownAuto extends Widget_Base{
 			[
 				'label' => __( 'Color', 'elementor-pro' ),
 				'type' => Controls_Manager::COLOR,
+				'default' => '#BB0000',
 				'selectors' => [
 					'{{WRAPPER}} .countdown-digits' => 'color: {{VALUE}};',
 				],
@@ -218,6 +230,7 @@ class CountdownAuto extends Widget_Base{
 			[
 				'label' => __( 'Color', 'elementor-pro' ),
 				'type' => Controls_Manager::COLOR,
+				'defalut' => '#909090',
 				'selectors' => [
 					'{{WRAPPER}} .countdown-label' => 'color: {{VALUE}};',
 				],
@@ -236,87 +249,17 @@ class CountdownAuto extends Widget_Base{
 		);
 
 		$this->end_controls_section();
-
-		$this->start_controls_section(
-			'section_expire_message_style',
-			[
-				'label' => __( 'Message', 'elementor-pro' ),
-				'tab' => Controls_Manager::TAB_STYLE,
-				'condition' => [
-					'expire_actions' => 'message',
-				],
-			]
-		);
-
-		$this->add_responsive_control(
-			'align',
-			[
-				'label' => __( 'Alignment', 'elementor-pro' ),
-				'type' => Controls_Manager::CHOOSE,
-				'options' => [
-					'left' => [
-						'title' => __( 'Left', 'elementor-pro' ),
-						'icon' => 'eicon-text-align-left',
-					],
-					'center' => [
-						'title' => __( 'Center', 'elementor-pro' ),
-						'icon' => 'eicon-text-align-center',
-					],
-					'right' => [
-						'title' => __( 'Right', 'elementor-pro' ),
-						'icon' => 'eicon-text-align-right',
-					],
-				],
-				'selectors' => [
-					'{{WRAPPER}} .countdown-expire--message' => 'text-align: {{VALUE}};',
-				],
-			]
-		);
-
-		$this->add_control(
-			'text_color',
-			[
-				'label' => __( 'Text Color', 'elementor-pro' ),
-				'type' => Controls_Manager::COLOR,
-				'default' => '',
-				'selectors' => [
-					'{{WRAPPER}} .countdown-expire--message' => 'color: {{VALUE}};',
-				],
-				'global' => [
-					'default' => Global_Colors::COLOR_TEXT,
-				],
-			]
-		);
-
-		$this->add_group_control(
-			Group_Control_Typography::get_type(),
-			[
-				'name' => 'typography',
-				'global' => [
-					'default' => Global_Typography::TYPOGRAPHY_TEXT,
-				],
-				'selector' => '{{WRAPPER}} .countdown-expire--message',
-			]
-		);
-
-		$this->add_responsive_control(
-			'message_padding',
-			[
-				'label' => __( 'Padding', 'elementor-pro' ),
-				'type' => Controls_Manager::DIMENSIONS,
-				'size_units' => [ 'px', '%', 'em' ],
-				'selectors' => [
-					'{{WRAPPER}} .countdown-expire--message' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				],
-			]
-		);
-
-		$this->end_controls_section();
     }
     
 
-    // RENDER
-
+    /*
+    *
+    *
+    * RENDER
+    * Editor mode
+    *
+    *
+    */
     protected function render() {
         
         $settings = $this->get_settings_for_display();
@@ -334,6 +277,4 @@ class CountdownAuto extends Widget_Base{
     
     } 
 
-	
-	
 }

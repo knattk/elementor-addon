@@ -18,19 +18,19 @@ class PromotionCard extends Widget_Base{
   }
 
   public function get_title(){
-    return 'Card';
+    return 'Promotion Card';
   }
 
   public function get_icon(){
-    return 'fa fa-square-o';
+    return 'eicon-accordion';
   }
 
   public function get_style_depends() {
-    return ['style-css'];
+    return ['elmta-style-css'];
   }
   public function get_script_depends() {
-    return ['scripts-js'];
-}
+    return ['elmta-promotion-card-js'];
+  }
 
   public function get_categories(){
     return ['general'];
@@ -38,7 +38,14 @@ class PromotionCard extends Widget_Base{
 
   protected function _register_controls(){
 
-    /* Tab Title */
+    /*
+    *
+    *
+    * REGISTER CONTROLS
+    *
+    *
+    */
+
     $this->start_controls_section(
 		'content_section',
 		[
@@ -163,16 +170,6 @@ class PromotionCard extends Widget_Base{
             ]
         );
         $repeater->add_control(
-            'product-price-sale',
-            [
-                'label' => __( 'Sale Price', 'card-promotion' ),
-                'type' => \Elementor\Controls_Manager::NUMBER,
-                'min' => 0,
-                'max' => 99999,
-                'step' => 1,
-            ]
-        );
-        $repeater->add_control(
             'product-price-regular',
             [
                 'label' => __( 'Regular Price', 'card-promotion' ),
@@ -182,6 +179,17 @@ class PromotionCard extends Widget_Base{
                 'step' => 1,
             ]
         );
+        $repeater->add_control(
+            'product-price-sale',
+            [
+                'label' => __( 'Sale Price', 'card-promotion' ),
+                'type' => \Elementor\Controls_Manager::NUMBER,
+                'min' => 0,
+                'max' => 99999,
+                'step' => 1,
+            ]
+        );
+        
         $repeater->add_control(
 			'product_featured',
 			[
@@ -224,10 +232,15 @@ class PromotionCard extends Widget_Base{
 
 
 
-    /* ---------- STYLE ---------- */
+    /*
+    *
+    *
+    * STYE
+    * CONTROLLER
+    *
+    *
+    */
 
-
-    // CARD -----------------------------------------
     $this->start_controls_section(
         'style_card',
         [
@@ -317,8 +330,7 @@ class PromotionCard extends Widget_Base{
     $this->end_controls_section();
 
 
-    // CONTENT -----------------------------------------
-    
+    /* Content */
     $this->start_controls_section(
         'style_content',
         [
@@ -337,9 +349,7 @@ class PromotionCard extends Widget_Base{
             ],
         ]
     );
-    //TITLE
-
-    
+    /* Title */
     $this->add_control(
         'style_content_title',
         [
@@ -371,7 +381,7 @@ class PromotionCard extends Widget_Base{
             ]
         );
 
-        // COUNTER
+        /* Counter */
         $this->add_control(
             'style_content_counter',
             [
@@ -436,7 +446,7 @@ class PromotionCard extends Widget_Base{
 
     $this->end_controls_section();
 
-    // PRICE TAG
+    /* Price tag */
     $this->start_controls_section(
         'style_price_tag',
         [
@@ -509,7 +519,7 @@ class PromotionCard extends Widget_Base{
     $this->end_controls_section();
 
 
-    // BUTTON
+    /* Button */
     $this->start_controls_section(
         'style_button',
         [
@@ -607,92 +617,99 @@ class PromotionCard extends Widget_Base{
 
   }
 
-// RENDER
+    /*
+    *
+    *
+    * RENDER
+    * Editor mode
+    *
+    *
+    */
 
-protected function render() {
-	
-  $settings = $this->get_settings_for_display();
-
-  if ( $settings['list'] ) {
-
-    
-    
-    echo '<div class="promotion-card-container">';
-    
-    $card_id = 0;
-        foreach (  $settings['list'] as $item ) {
+    protected function render() {
         
-             echo    '
-                        <div class="promotion-card ' . $item['product_featured'] . ' ' .  $settings['product_discount_tag'] . ' ' .  $settings['product_notification'] . ' ' . $settings['product_star'] . '" id="promotion-item-' . $card_id . '">';
+    $settings = $this->get_settings_for_display();
+
+    if ( $settings['list'] ) {
+
+        
+        
+        echo '<div class="promotion-card-container">';
+        
+        $card_id = 0;
+            foreach (  $settings['list'] as $item ) {
             
-            
+                echo    '
+                            <div class="promotion-card ' . $item['product_featured'] . ' ' .  $settings['product_discount_tag'] . ' ' .  $settings['product_notification'] . ' ' . $settings['product_star'] . '" id="promotion-item-' . $card_id . '">';
+                
+                
 
-                echo    '<div class="promotion-card-image">
-                            <figure class="image">
-                            <img src=" ' . $item['product-image']['url'] . '" alt="' . $item['product-title'] . '" class="image">
-                            </figure>';
+                    echo    '<div class="promotion-card-image">
+                                <figure class="image">
+                                <img src=" ' . $item['product-image']['url'] . '" alt="' . $item['product-title'] . '" class="image">
+                                </figure>';
 
-                            if ( $settings['product_notification'] == 'noti') {
-                                echo    '<div class="card-notification"><span class="stock-number">กำลังจะหมด</span></div>';
-                            }
-
-                echo    '</div>
-                        <div class="promotion-card-content">
-                            <div class="card-content">
-                                <h3 class="card-title">' . $item['product-title'] . '</h3>
-
-                                <div class="card-info">
-                                    <div class="card-info-left">
-                                        จองแล้ว <span class="count-number">' . number_format($item['product-counter']) . '</span> เซต
-                                    </div>
-                                    
-                                    <div class="card-info-right">';
-
-                                        if ( $settings['product_star'] == 'star-on') {
-                                            echo    '<span class="promotion-star">★★★★★</span>';
-                                        }
-                                        
-                                echo '</div>
-                                </div>';
-
-                                if ( $item['product-list'] ) {
-                                    echo    '<div class="card-list">' . $item['product-list'] . '</div>';
+                                if ( $settings['product_notification'] == 'noti') {
+                                    echo    '<div class="card-notification"><span class="stock-number">กำลังจะหมด</span></div>';
                                 }
-                                
-                                    
-                                echo '
 
-                                <div class="card-footer">
-                                    <div class="card-footer-pricing">
-                                        <span class="price-sale">'; if($item['product-price-sale']){echo number_format($item['product-price-sale']);} echo '</span>
-                                        <span class="price-regular">'; if($item['product-price-regular']){echo number_format($item['product-price-regular']);} echo '</span> 
-                                    </div>
+                    echo    '</div>
+                            <div class="promotion-card-content">
+                                <div class="card-content">
+                                    <h3 class="card-title">' . $item['product-title'] . '</h3>
 
-                                    <div class="card-footer-button';
-                                    
-                                    if($settings['product-class']){
-                                        echo ' ' . $settings['product-class'];
+                                    <div class="card-info">
+                                        <div class="card-info-left">
+                                            จองแล้ว <span class="count-number">' . number_format($item['product-counter']) . '</span> เซต
+                                        </div>
+                                        
+                                        <div class="card-info-right">';
+
+                                            if ( $settings['product_star'] == 'star-on') {
+                                                echo    '<span class="promotion-star">★★★★★</span>';
+                                            }
+                                            
+                                    echo '</div>
+                                    </div>';
+
+                                    if ( $item['product-list'] ) {
+                                        echo    '<div class="card-list">' . $item['product-list'] . '</div>';
                                     }
+                                    
+                                        
+                                    echo '
 
-                                    echo '"> 
-                                        <a href="' . $settings['product-link'] . '" class="card-button" id="select-item-'. $card_id .'">' . $settings['product-button'] . '</a>
+                                    <div class="card-footer">
+                                        <div class="card-footer-pricing">
+                                            <span class="price-sale">'; if($item['product-price-sale']){echo number_format($item['product-price-sale']);} echo '</span>
+                                            <span class="price-regular">'; if($item['product-price-regular']){echo number_format($item['product-price-regular']);} echo '</span> 
+                                        </div>
+
+                                        <div class="card-footer-button';
+                                        
+                                        if($settings['product-class']){
+                                            echo ' ' . $settings['product-class'];
+                                        }
+
+                                        echo '"> 
+                                            <a href="' . $settings['product-link'] . '" class="card-button" id="select-item-'. $card_id .'">' . $settings['product-button'] . '</a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
 
-                        </div></div>';
-            
+                            </div></div>';
+                
 
 
-            $card_id = ($card_id + 1);
+                $card_id = ($card_id + 1);
 
+            }
+
+        echo '</div>';
+        
         }
 
-    echo '</div>';
-    
-    }
-
-} 
+    } 
 
 }
