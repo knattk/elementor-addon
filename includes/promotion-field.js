@@ -44,7 +44,11 @@ function PromotionField() {
 
     // set default promotion
     promotionDataSet(firstField)
-    field1.value = promotionData.promotion.title
+ 
+    if (field1) {
+      field1.value = promotionData.promotion.title
+    }
+    
 
     // Update localStorage
     localStorageUpdate(promotionData, "formPass")
@@ -70,7 +74,9 @@ function PromotionField() {
         // set default promotion from clicked field's data
         promotionDataSet(field)
 
-        field1.value = promotionData.promotion.title
+        if (field1) {
+          field1.value = promotionData.promotion.title
+        }
         // Update localStorage
         localStorageUpdate(promotionData, "formPass")
   

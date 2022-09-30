@@ -254,12 +254,12 @@ class PromotionField extends Widget_Base{
         ]
     );
 
-
+        /* Title */
         $this->add_group_control(
             Group_Control_Typography::get_type(),
             [
                 'name' => 'text_title',
-                'selector' => '{{WRAPPER}} .pro',
+                'selector' => '{{WRAPPER}} .promotion-title',
                 'separator'		=> 'after'
             ]
         );
@@ -271,10 +271,33 @@ class PromotionField extends Widget_Base{
                 'type' 			=> Controls_Manager::COLOR,
                 'default'       => '#191919',
                 'selectors'		=> [
-                    '{{WRAPPER}} .pro' => 'color: {{VALUE}};'
+                    '{{WRAPPER}} .promotion-title' => 'color: {{VALUE}};'
                 ]
             ]
         );
+
+        /* Items */
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'text_items',
+                'selector' => '{{WRAPPER}} .promotion-items',
+                'separator'		=> 'after'
+            ]
+        );
+
+        $this->add_control(
+            'items-color',
+            [
+                'label' 		=> __( 'Color', 'promotion-field' ),
+                'type' 			=> Controls_Manager::COLOR,
+                'default'       => '#191919',
+                'selectors'		=> [
+                    '{{WRAPPER}} .promotion-items' => 'color: {{VALUE}};'
+                ]
+            ]
+        );
+
 
         /* Regular price */
         $this->add_control(
@@ -289,7 +312,7 @@ class PromotionField extends Widget_Base{
             Group_Control_Typography::get_type(),
             [
                 'name' => 'card-counter',
-                'selector' => '{{WRAPPER}} .price-regular',
+                'selector' => '{{WRAPPER}} .regular-price',
                 'separator'		=> 'after'
             ]
         );
@@ -300,7 +323,7 @@ class PromotionField extends Widget_Base{
                 'type' 			=> Controls_Manager::COLOR,
                 'default'       => '#909090',
                 'selectors'		=> [
-                    '{{WRAPPER}} .price-regular' => 'color: {{VALUE}};'
+                    '{{WRAPPER}} .regular-price' => 'color: {{VALUE}};'
                 ]
             ]
         );
@@ -319,7 +342,7 @@ class PromotionField extends Widget_Base{
             Group_Control_Typography::get_type(),
             [
                 'name' => 'promotion-field',
-                'selector' => '{{WRAPPER}} .price-sale',
+                'selector' => '{{WRAPPER}} .sale-price',
                 'separator'		=> 'after'
             ]
         );
@@ -330,7 +353,7 @@ class PromotionField extends Widget_Base{
                 'type' 			=> Controls_Manager::COLOR,
                 'default'       => '#BB0000',
                 'selectors'		=> [
-                    '{{WRAPPER}} .price-sale' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .sale-price' => 'color: {{VALUE}};',
                 ]
             ]
         );
@@ -356,7 +379,7 @@ class PromotionField extends Widget_Base{
                 'type' 			=> Controls_Manager::COLOR,
                 'default' => '#FBEEEE',
                 'selectors'		=> [
-                    '{{WRAPPER}} .tag' => 'background-color: {{VALUE}};'
+                    '{{WRAPPER}} .promotion-field .tag' => 'background-color: {{VALUE}};'
                 ]
             ]
         ); 
@@ -367,7 +390,7 @@ class PromotionField extends Widget_Base{
                 'type' 			=> Controls_Manager::COLOR,
                 'default'       => '#BB0000',
                 'selectors'		=> [
-                    '{{WRAPPER}} .tag' => 'color: {{VALUE}};'
+                    '{{WRAPPER}} .promotion-field .tag' => 'color: {{VALUE}};'
                 ]
             ]
         );
@@ -375,7 +398,7 @@ class PromotionField extends Widget_Base{
             Group_Control_Typography::get_type(),
             [
                 'name' => 'price_tag-text',
-                'selector' => '{{WRAPPER}} .tag',
+                'selector' => '{{WRAPPER}} .promotion-field .tag',
             ]
         );
         $this->add_responsive_control(
@@ -385,7 +408,7 @@ class PromotionField extends Widget_Base{
                 'type' => Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em', 'rem' ],
                 'selectors' => [
-                    '{{WRAPPER}} .tag' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .promotion-field .tag' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -397,7 +420,7 @@ class PromotionField extends Widget_Base{
                 'type' => Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em', 'rem' ],
                 'selectors' => [
-                    '{{WRAPPER}} .tag' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .promotion-field .tag' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -407,7 +430,7 @@ class PromotionField extends Widget_Base{
 			[
 				'name' => 'promotion-field-tag-border',
 				'label' => __( 'Border', 'promotion-field' ),
-				'selector' => '{{WRAPPER}} .tag',
+				'selector' => '{{WRAPPER}} .promotion-field .tag',
 			]
 		);
 
@@ -466,14 +489,14 @@ class PromotionField extends Widget_Base{
                             echo '</div>';
                             if($item['promotion-field-price-sale'] && $item['promotion-field-price-regular']){
 
-                                $price_regular = number_format($item['promotion-field-price-regular']);
-                                $price_sale = number_format($item['promotion-field-price-sale']);
+                                $price_regular =$item['promotion-field-price-regular'];
+                                $price_sale = $item['promotion-field-price-sale'];
                                 $price_total = $price_regular - $price_sale;
 
                                 echo    '<div class="promotion-field-notification">
                                             <div class="notification-content">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M256 352C293.2 352 319.2 334.5 334.4 318.1C343.3 308.4 358.5 307.7 368.3 316.7C378 325.7 378.6 340.9 369.6 350.6C347.7 374.5 309.7 400 256 400C202.3 400 164.3 374.5 142.4 350.6C133.4 340.9 133.1 325.7 143.7 316.7C153.5 307.7 168.7 308.4 177.6 318.1C192.8 334.5 218.8 352 256 352zM208.4 208C208.4 225.7 194 240 176.4 240C158.7 240 144.4 225.7 144.4 208C144.4 190.3 158.7 176 176.4 176C194 176 208.4 190.3 208.4 208zM304.4 208C304.4 190.3 318.7 176 336.4 176C354 176 368.4 190.3 368.4 208C368.4 225.7 354 240 336.4 240C318.7 240 304.4 225.7 304.4 208zM512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256zM256 48C141.1 48 48 141.1 48 256C48 370.9 141.1 464 256 464C370.9 464 464 370.9 464 256C464 141.1 370.9 48 256 48z"/></svg>
-                                                <span> คุณประหยัด  '. $price_total .' บาท จากโปรนี้</span>    
+                                                <span> คุณประหยัด  '. number_format($price_total) .' บาท จากโปรนี้</span>    
                                             </div>
                                         </div>';
                             }

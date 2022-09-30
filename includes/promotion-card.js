@@ -25,17 +25,20 @@ function promotionCard() {
     promotionData.promotion.pricesale = parent.querySelector(".price-sale")? parent.querySelector(".price-sale").innerHTML : "";
   }
   const checkTypeOfFiled = (field) => {
-    if (field.classList.contains("elementor-field-type-textarea")) {
-      return "textarea";
-    } else if (field.classList.contains("elementor-field-type-radio")) {
-      return "radio";
-    } else if (field.classList.contains("elementor-field-type-checkbox")) {
-      return "checkbox";
-    } else if (field.classList.contains("elementor-field-type-select")) {
-      return "dropdown";
-    } else {
-      return null;
+    if (field){
+      if (field.classList.contains("elementor-field-type-textarea")) {
+        return "textarea";
+      } else if (field.classList.contains("elementor-field-type-radio")) {
+        return "radio";
+      } else if (field.classList.contains("elementor-field-type-checkbox")) {
+        return "checkbox";
+      } else if (field.classList.contains("elementor-field-type-select")) {
+        return "dropdown";
+      } else {
+        return null;
+      }
     }
+    
   }
 
   /*
@@ -100,7 +103,6 @@ function promotionCard() {
 
         case "textarea":
           
-
           field1.value = promotionData.promotion.title
 
           // Update field_1 selected item
