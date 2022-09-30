@@ -1,25 +1,30 @@
 function promotionCard() {
   localStorage.clear();
 
+  var promotionData = { promotion: {id:"", title:"", item:"", pricereg:"", pricesale:""}, duedate: "", name: "", phone: "" };
+  const firstCard = document.querySelector('.promotion-card')
+  const promotionCardButtons = document.querySelectorAll(".card-button");
+  const fieldGroup1 = document.querySelector(".elementor-field-group-field_1");
+  const field1 = document.querySelector("#form-field-field_1");
+  const promotionFields = document.querySelectorAll(".promotion-field"); // Promotion Field Widget support
+  
+  
 
-  /*
-  *
-  * Init function
-  *
-  */
-
-  let formData = { promotion: "", duedate: "", name: "", phone: "" }; // JSON
-
-  function setPromotion(promotionTitle, promotionItems, regularPrice, salePrice){
-    formData.promotion = {
-      title: promotionTitle,
-      item: promotionItems,
-      pricereg: regularPrice,
-      pricesale: salePrice,
-    }
+  const localStorageUpdate = (source, key) => {
+    localStorage.setItem(key, JSON.stringify(source));
   }
-
-  function checkTypeOfFiled(field) {
+  const localStorageInitialize = (receiver, key) => {
+      if (localStorage.getItem(key)){
+        receiver = JSON.parse(localStorage[key])
+      }
+  }
+  const promotionDataSet = (parent) => {
+    promotionData.promotion.title = parent.querySelector(".card-title")? parent.querySelector(".card-title").innerHTML : "";
+    promotionData.promotion.item = parent.querySelector(".card-list")? parent.querySelector(".card-list").innerHTML : "";
+    promotionData.promotion.pricereg = parent.querySelector(".price-regular")? parent.querySelector(".price-regular").innerHTML : "";
+    promotionData.promotion.pricesale = parent.querySelector(".price-sale")? parent.querySelector(".price-sale").innerHTML : "";
+  }
+  const checkTypeOfFiled = (field) => {
     if (field.classList.contains("elementor-field-type-textarea")) {
       return "textarea";
     } else if (field.classList.contains("elementor-field-type-radio")) {
@@ -33,29 +38,31 @@ function promotionCard() {
     }
   }
 
-  const registerForm = document.querySelector('[id*="thank"]'); // Form
-  const field_1 = document.querySelector(".elementor-field-group-field_1"); // Field_1
+  /*
+  *
+  * Init function
+  *
+  */
 
-  let promotionCards = [].slice.call(document.querySelectorAll(".promotion-card"));
-  console.log(promotionCards)
-  let promotionCardsButton = [].slice.call(document.querySelectorAll('[id^="select-item"]'));
-  
-
-  
-  let clickedCard, cardTitle, cardList, cardPriceRegular, cardPriceSale; // Card details
-
-  // Set default promotion to JSON
-  const setDefaultFormData = function () {
-    cardTitle = promotionCards[0].getElementsByClassName("card-title")[0] ? promotionCards[0].getElementsByClassName("card-title")[0].innerHTML : null;
-    cardList = promotionCards[0].getElementsByClassName("card-list")[0] ? promotionCards[0].getElementsByClassName("card-list")[0].innerHTML : null;
-    cardPriceRegular = promotionCards[0].getElementsByClassName( "price-regular" )[0] ? promotionCards[0].getElementsByClassName("price-regular")[0].innerHTML : null;
-    cardPriceSale = promotionCards[0].getElementsByClassName("price-sale")[0] ? promotionCards[0].getElementsByClassName("price-sale")[0].innerHTML : null;
-
-    setPromotion(cardTitle, cardList, cardPriceRegular, cardPriceSale)
+  const init = () => {
     
+    // Get data from "formPass" then put it into ${promotionData}
+    localStorageInitialize(promotionData, "formPass")
+
+    promotionDataSet(firstCard)
+
+    switch (checkTypeOfFiled(fieldGroup1)) {
+      case "textarea":
+        field1.value = promotionData.promotion.title
+        break;
+    }
+
+    localStorageUpdate(promotionData, "formPass")
+
   }
 
-  setDefaultFormData();
+  let promotionCards = [].slice.call(document.querySelectorAll(".promotion-card"));
+
 
 
   
@@ -65,108 +72,106 @@ function promotionCard() {
   *
   */
   
+  
+  
 
-  // Check if field_1 is exit.
-  if (field_1 !== null) {
+  promotionCardButtons.forEach(button => {
+    
+    button.addEventListener("click", () => {
+      let card = button.parentNode.parentNode.parentNode.parentNode.parentNode;
+      let productId = card.getAttribute("product-id");
 
-    for (var i = 0; i < promotionCardsButton.length; i++) {
+      // Get data from "formPass" then put it into ${promotionData}
+      localStorageInitialize(promotionData, "formPass")
+        
+      // Set ${promotionData} value from this card's data
+      promotionDataSet(card)
+      
+      // Update localStorage
+      localStorageUpdate(promotionData, "formPass")
 
-      // when user click the button
-      promotionCardsButton[i].addEventListener("click", function (e) {
+      /*
+      *
+      * Form field_1 support
+      *
+      */
 
-       // passing information into localStorage
-        function updateItemToLocalStorage(item) {
-          clickedCard = item.parentNode.parentNode.parentNode;
-          cardTitle = clickedCard.getElementsByClassName("card-title")[0] ? clickedCard.getElementsByClassName("card-title")[0].innerHTML : null;
-          cardList = clickedCard.getElementsByClassName("card-list")[0] ? clickedCard.getElementsByClassName("card-list")[0].innerHTML : null;
-          cardPriceRegular = clickedCard.getElementsByClassName("price-regular")[0] ? clickedCard.getElementsByClassName("price-regular")[0].innerHTML.replace(/,/g, "") : null;
-          cardPriceSale = clickedCard.getElementsByClassName("price-sale")[0] ? clickedCard.getElementsByClassName("price-sale")[0].innerHTML.replace(/,/g, "") : null;
+      switch (checkTypeOfFiled(fieldGroup1)) {
 
-          // Update clicked item to ${formData}
-          setPromotion(cardTitle, cardList, cardPriceRegular, cardPriceSale)
-        }
+        case "textarea":
+          
 
-        updateItemToLocalStorage(this);
+          field1.value = promotionData.promotion.title
 
-        //  Check type of Field_1
-        switch (checkTypeOfFiled(field_1)) {
-
-          case "textarea":
-
-            //Promotion Field Support
-            let promotionFields = document.getElementById("promotion-fields");
-            let promotionField = document.querySelectorAll(".promotion-field");
-
-            // If using promotion-field widget.
-            if (promotionFields !== null) {
+          // Update field_1 selected item
+          if (promotionFields) {
               
-              // Clear selected class.
-              [].forEach.call(promotionField, function (field) {
-                field.classList.remove("selected");
-              });
+            promotionFields.forEach(element => {
+              let fieldPromotionId = element.getAttribute("promotion-id")
 
-              // Add .selected to the classList of clicked item.
-              document.getElementById("promotion-field-" + this.id[this.id.length - 1]).classList.add("selected");
+              element.classList.remove("selected")
+              
+              if (productId == fieldPromotionId){
+                element.classList.add("selected")
+              }
 
-              // Update field_1.
-              document.getElementById("form-field-field_1").value = document.getElementById("promotion-field-" + this.id[this.id.length - 1]).querySelector(".pro").innerText;
-
-            } else {
-              // Put card title into field_1 instead.
-              document.getElementById("form-field-field_1").value = this.parentNode.parentNode.parentNode.querySelector(".card-title").innerText;
-            }
-
-            break;
-
-          case "radio":
-            if (i <= promotionCardsButton.length) {
-              document.getElementById("form-field-field_1-" + this.id[this.id.length - 1]).checked = true;
-            } else {
-              document.getElementById("form-field-field_1-0").checked = true;
-            }
-            break;
-
-          case "checkbox":
-            console.log("checkbox - currently not support.");
-            break;
-
-          case "dropdown":
-            if (i <= promotionCardsButton.length) {
-              document.getElementById("form-field-field_1").selectedIndex =
-                this.id[this.id.length - 1];
-            } else {
-              document.getElementById("form-field-field_1").selectedIndex = 0;
-            }
-            break;
-
-          default: {
-            break;
+            })
+            
           }
+
+          break;
+
+        case "radio":
+
+            document.getElementById("form-field-field_1-" + (productId - 1)).checked = true;
+
+          break;
+
+        case "checkbox":
+          break;
+
+        case "dropdown":
+            document.getElementById("form-field-field_1").selectedIndex = productId - 1;
+          break;
+
+        default: {
+          break;
         }
-      }); //Event listener
-    }
-  }
+      }
+
+    })
+  })
 
   /*
   *
-  * Event: Click submit button
+  * Form submission
   *
   */
 
-  if (registerForm != null) {
-    document
-      .getElementById(registerForm.id)
-      .addEventListener("submit", function () {
-        let field_2 = document.getElementById("form-field-field_2").value; // name
-        let field_3 = document.getElementById("form-field-field_3").value; // phone
+  const formDataToLocalStorage = () => {
 
-        // Update form data to ${formData}
-        formData.name = field_2;
-        formData.phone = field_3;
+    const formThank = document.querySelector('[id*="thank"]'); // Form
 
-        // Set localStorage
-        localStorage.setItem("formPass", JSON.stringify(formData));
-      }); // End Even Listener
+    if (formThank) { // If form_thank is not null
+      
+      const formField2 = document.getElementById("form-field-field_2");
+      const formField3 = document.getElementById("form-field-field_3");
+            
+      document.getElementById(formThank.id).addEventListener("submit", function () {
+
+            // Get data from "formPass" then put it into ${promotionData}
+            localStorageInitialize(promotionData, "formPass")
+
+            // add input data into ${promotionData}
+            promotionData.name = formField2? formField2.value : null; // name
+            promotionData.phone = formField3? formField3.value : null; // phone
+            
+            // Update localStorage
+            localStorageUpdate(promotionData, "formPass")
+
+
+        }); // End Even Listener
+    }
   }
 
   /*
@@ -175,8 +180,6 @@ function promotionCard() {
   *
   */
  
-  
-
   //  String control
   var promotionCardDOM = {
     card: "promotion-card",
@@ -246,14 +249,12 @@ function promotionCard() {
     // Update register register (promotionCardDOM.register)
     updateRegisterCounter = () => {
       featuredItem.querySelector("." + promotionCardDOM.register).textContent = addCommas(localStorage.CountRegistered)
-      console.log(`update register ${localStorage.CountRegistered}`)
     }
 
     // Update stock counter (promotionCardDOM.stock)
     updateStockCounter = () => {
       if (featuredItem.querySelector("." + promotionCardDOM.stock) !== null) {
         featuredItem.querySelector("." + promotionCardDOM.stock).textContent = `${stockAvailable()}`;
-        console.log('update stock')
       }
     }
 
@@ -294,13 +295,11 @@ function promotionCard() {
 
           // Get base number from DOM.
           localStorage.CountRegistered = Number(localStorage.CountRegistered) + cal(setNum.min, setNum.max);
-          console.log(`localStorage.CountRegistered ${localStorage.CountRegistered}`)
           updateRegisterCounter()
           updateStockCounter()
       } else {
           //Set LocalStorage
           localStorage.CountRegistered = setNum.start();
-          console.log(`localStorage.CountRegistered ${localStorage.CountRegistered}`)
           updateRegisterCounter()
           updateStockCounter()
       }
@@ -308,8 +307,12 @@ function promotionCard() {
       stockHandler();
     })
   } //Featured Item
-}
 
+  init()
+  if (promotionFields !== null || promotionFields.length === 0){
+    formDataToLocalStorage()
+  }
+}
 
 window.addEventListener("DOMContentLoaded", (event) => {
   jQuery(window).on("elementor/frontend/init", () => {

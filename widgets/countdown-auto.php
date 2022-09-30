@@ -267,9 +267,9 @@ class CountdownAuto extends Widget_Base{
             echo '
                 <div id="wrap-countdown" class="countdown-wrapper">
     
-                    <div class="countdown-item"><span id="domHrs" class="countdown-digits">00</span><span class="countdown-label">ชั่วโมง</span></div>
-                    <div class="countdown-item"><span id="domMin" class="countdown-digits">00</span><span class="countdown-label">นาที</span></div>
-                    <div class="countdown-item"><span id="domSec" class="countdown-digits">00</span><span class="countdown-label">วินาที</span></div>
+                    <div class="countdown-item"><span id="domHrs" class="countdown-digits countdown-hours">00</span><span class="countdown-label">ชั่วโมง</span></div>
+                    <div class="countdown-item"><span id="domMin" class="countdown-digits countdown-minutes">00</span><span class="countdown-label">นาที</span></div>
+                    <div class="countdown-item"><span id="domSec" class="countdown-digits countdown-seconds">00</span><span class="countdown-label">วินาที</span></div>
                 
                 </div>
             

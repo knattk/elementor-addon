@@ -424,8 +424,7 @@ class PromotionCard extends Widget_Base{
             Group_Control_Typography::get_type(),
             [
                 'name' => 'card-promotion',
-                'selector' => ['{{WRAPPER}} .card-list',
-                                '{{WRAPPER}} .card-footer-pricing span'],
+                'selector' => '{{WRAPPER}} .card-list',
                 'separator'		=> 'after'
             ]
         );
@@ -455,17 +454,7 @@ class PromotionCard extends Widget_Base{
         ]
     );
     
-        $this->add_control(
-            'price_tag_background',
-            [
-                'label' 		=> __( 'Background', 'card-promotion' ),
-                'type' 			=> Controls_Manager::COLOR,
-                'default' => '#9B0000',
-                'selectors'		=> [
-                    '{{WRAPPER}} .product-price-tag' => 'background-color: {{VALUE}};'
-                ]
-            ]
-        ); 
+
         $this->add_control(
             'price_tag-color',
             [
@@ -473,7 +462,7 @@ class PromotionCard extends Widget_Base{
                 'type' 			=> Controls_Manager::COLOR,
                 'default'       => '#fff',
                 'selectors'		=> [
-                    '{{WRAPPER}} .product-price-tag' => 'color: {{VALUE}};'
+                    '{{WRAPPER}} .card-footer-pricing span' => 'color: {{VALUE}};'
                 ]
             ]
         );
@@ -481,7 +470,7 @@ class PromotionCard extends Widget_Base{
             Group_Control_Typography::get_type(),
             [
                 'name' => 'price_tag-text',
-                'selector' => '{{WRAPPER}} .product-price-tag',
+                'selector' => '{{WRAPPER}} .card-footer-pricing',
             ]
         );
         $this->add_responsive_control(
@@ -491,28 +480,9 @@ class PromotionCard extends Widget_Base{
                 'type' => Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em', 'rem' ],
                 'selectors' => [
-                    '{{WRAPPER}} .product-price-tag' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .card-footer-pricing' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
-        );
-        $this->add_responsive_control(
-            'price_tag_radius',
-            [
-                'label' => __( 'Border Radius', 'card-promotion' ),
-                'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => [ 'px', '%', 'em', 'rem' ],
-                'selectors' => [
-                    '{{WRAPPER}} .product-price-tag' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-            ]
-        );
-        $this->add_group_control(
-			\Elementor\Group_Control_Box_Shadow::get_type(),
-			[
-				'name' => 'price_tag_shadow',
-				'label' => __( 'Box Shadow', 'card-promotion' ),
-				'selector' => '{{WRAPPER}} .product-price-tag',
-			]
         );
 
         
@@ -637,10 +607,15 @@ class PromotionCard extends Widget_Base{
         echo '<div class="promotion-card-container">';
         
         $card_id = 0;
+        $product_id = 1;
             foreach (  $settings['list'] as $item ) {
+
+
+
+                
             
                 echo    '
-                            <div class="promotion-card ' . $item['product_featured'] . ' ' .  $settings['product_discount_tag'] . ' ' .  $settings['product_notification'] . ' ' . $settings['product_star'] . '" id="promotion-item-' . $card_id . '">';
+                            <div class="promotion-card ' . $item['product_featured']  . ' ' .  $settings['product_discount_tag'] . ' ' .  $settings['product_notification'] . ' ' . $settings['product_star'] . ' ' . '" product-id="'. $product_id . '" id="promotion-item-' . $card_id . '">';
                 
                 
 
@@ -699,10 +674,9 @@ class PromotionCard extends Widget_Base{
 
 
                             </div></div>';
-                
-
 
                 $card_id = ($card_id + 1);
+                $product_id = $product_id + 1;
 
             }
 
@@ -713,3 +687,5 @@ class PromotionCard extends Widget_Base{
     } 
 
 }
+
+
