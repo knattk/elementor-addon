@@ -1,34 +1,46 @@
 function PromotionField() {
 
   //Global variable
-  var promotionData = { promotion: {id:"", title:"", item:"", pricereg:"", pricesale:""}, duedate: "", name: "", phone: "" }
-  var promotionFields = document.querySelectorAll(".promotion-field")
-  let firstField = promotionFields[0]
-  var field1 = document.querySelector('#form-field-field_1')
-  
-  
+  var promotionData = { promotion: {id:"", title:"", item:"", pricereg:"", pricesale:""}, duedate: "", name: "", phone: "" };
+  const promotionFields = document.querySelectorAll(".promotion-field");
+  const fieldGroup = document.querySelector(".elementor-field-group-field_1");
+
   const getChildData = (parent, child) => {
     return parent.querySelector(child) ? parent.querySelector(child).innerHTML : ""
   }
 
   const promotionDataSet = (parent) => {
-
     promotionData.promotion.id = parent.getAttribute("promotion-id")
     promotionData.promotion.title = getChildData(parent, ".promotion-title")
     promotionData.promotion.item = getChildData(parent, ".promotion-items")
     promotionData.promotion.pricereg = getChildData(parent, ".regular-price")
     promotionData.promotion.pricesale = getChildData(parent, ".sale-price")
-
   }
 
   const localStorageInitialize = (receiver, key) => {
     if (localStorage.getItem(key)){
       receiver = JSON.parse(localStorage[key])
     }
-}
+  }
 
   const localStorageUpdate = (source, key) => {
     localStorage.setItem(key, JSON.stringify(source));
+  }
+
+  const checkTypeOfFiled = (field) => {
+    if (field){
+      if (field.classList.contains("elementor-field-type-textarea")) {
+        return "textarea";
+      } else if (field.classList.contains("elementor-field-type-radio")) {
+        return "radio";
+      } else if (field.classList.contains("elementor-field-type-checkbox")) {
+        return "checkbox";
+      } else if (field.classList.contains("elementor-field-type-select")) {
+        return "dropdown";
+      } else {
+        return null;
+      }
+    }
   }
 
   /*
@@ -40,18 +52,19 @@ function PromotionField() {
   const init = () => {
 
     // Add .selected class to first promotion
-    firstField.classList.add("selected")
+    promotionFields[0].classList.add("selected")
 
     // set default promotion
-    promotionDataSet(firstField)
+    promotionDataSet(promotionFields[0])
  
-    if (field1) {
-      field1.value = promotionData.promotion.title
-    }
-    
-
     // Update localStorage
     localStorageUpdate(promotionData, "formPass")
+
+    // Update field_1
+    if (checkTypeOfFiled(fieldGroup) == "textarea") {
+        fieldGroup.getElementsByTagName("textarea")[0].value = promotionData.promotion.title
+    }
+
   }
 
   /*
@@ -70,15 +83,20 @@ function PromotionField() {
           element.classList.remove("selected")
         })
 
+        // Add .selected to this card
         this.classList.add("selected")
-        // set default promotion from clicked field's data
+
+        // Store this card info in ${promotionData}
         promotionDataSet(field)
 
-        if (field1) {
-          field1.value = promotionData.promotion.title
-        }
         // Update localStorage
         localStorageUpdate(promotionData, "formPass")
+
+        // Update field_1
+        if (checkTypeOfFiled(fieldGroup) == "textarea") {
+          fieldGroup.getElementsByTagName("textarea")[0].value = promotionData.promotion.title
+        }
+
   
       })
     
@@ -95,7 +113,7 @@ function PromotionField() {
 
     const formThank = document.querySelector('[id*="thank"]'); // Form
 
-    if (formThank) { // If form_thank is not null
+    if (formThank) {
       
       // get correct form ID
       const form = document.getElementById(formThank.id);

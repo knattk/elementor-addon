@@ -4,26 +4,27 @@ function promotionCard() {
   var promotionData = { promotion: {id:"", title:"", item:"", pricereg:"", pricesale:""}, duedate: "", name: "", phone: "" };
   const firstCard = document.querySelector('.promotion-card')
   const promotionCardButtons = document.querySelectorAll(".card-button");
-  const fieldGroup1 = document.querySelector(".elementor-field-group-field_1");
-  const field1 = document.querySelector("#form-field-field_1");
+  const fieldGroup = document.querySelector(".elementor-field-group-field_1");
   const promotionFields = document.querySelectorAll(".promotion-field"); // Promotion Field Widget support
   
   
-
   const localStorageUpdate = (source, key) => {
     localStorage.setItem(key, JSON.stringify(source));
   }
+
   const localStorageInitialize = (receiver, key) => {
       if (localStorage.getItem(key)){
         receiver = JSON.parse(localStorage[key])
       }
   }
+
   const promotionDataSet = (parent) => {
     promotionData.promotion.title = parent.querySelector(".card-title")? parent.querySelector(".card-title").innerHTML : "";
     promotionData.promotion.item = parent.querySelector(".card-list")? parent.querySelector(".card-list").innerHTML : "";
     promotionData.promotion.pricereg = parent.querySelector(".price-regular")? parent.querySelector(".price-regular").innerHTML : "";
     promotionData.promotion.pricesale = parent.querySelector(".price-sale")? parent.querySelector(".price-sale").innerHTML : "";
   }
+  
   const checkTypeOfFiled = (field) => {
     if (field){
       if (field.classList.contains("elementor-field-type-textarea")) {
@@ -54,10 +55,9 @@ function promotionCard() {
 
     promotionDataSet(firstCard)
 
-    switch (checkTypeOfFiled(fieldGroup1)) {
-      case "textarea":
-        field1.value = promotionData.promotion.title
-        break;
+    // Update field_1
+    if (checkTypeOfFiled(fieldGroup) == "textarea") {
+      fieldGroup.getElementsByTagName("textarea")[0].value = promotionData.promotion.title
     }
 
     localStorageUpdate(promotionData, "formPass")
@@ -99,11 +99,11 @@ function promotionCard() {
       *
       */
 
-      switch (checkTypeOfFiled(fieldGroup1)) {
+      switch (checkTypeOfFiled(fieldGroup)) {
 
         case "textarea":
           
-          field1.value = promotionData.promotion.title
+          fieldGroup.getElementsByTagName("textarea")[0].value = promotionData.promotion.title
 
           // Update field_1 selected item
           if (promotionFields) {

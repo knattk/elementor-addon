@@ -2,16 +2,11 @@ function productCard() {
 
   //Global variable
   var promotionData = { promotion: {id:"", title:"", item:"", pricereg:"", pricesale:""}, duedate: "", name: "", phone: "" };
-  var countdown = {
-    days: "00",
-    hours: "00",
-    minutes: "00",
-    seconds: "00"
-  }
-  const firstCard = document.querySelector('.product-card')
+  var countdown = {days: "00",hours: "00",minutes: "00",seconds: "00"}
+
+  const card1 = document.querySelector('.product-card');
   const buttons = document.querySelectorAll(".product-button");
-  const field1 = document.querySelector("#form-field-field_1");
-  const fieldGroup1 = document.querySelector(".elementor-field-group-field_1");
+  const fieldGroup = document.querySelector(".elementor-field-group-field_1");
   const promotionFields = document.querySelectorAll(".promotion-field"); // Promotion Field Widget support
 
   const promotionDataSet = (parent) => {
@@ -26,7 +21,7 @@ function productCard() {
     if (localStorage.getItem(key)){
       receiver = JSON.parse(localStorage[key])
     }
-}
+  }
 
   const localStorageUpdate = (source, key) => {
     localStorage.setItem(key, JSON.stringify(source));
@@ -60,12 +55,11 @@ function productCard() {
     // Get data from "formPass" then put it into ${promotionData}
     localStorageInitialize(promotionData, "formPass")
 
-    promotionDataSet(firstCard)
+    promotionDataSet(card1)
 
-    switch (checkTypeOfFiled(fieldGroup1)) {
-      case "textarea":
-        field1.value = promotionData.promotion.title
-        break;
+    // Update field_1
+    if (checkTypeOfFiled(fieldGroup) == "textarea") {
+      fieldGroup.getElementsByTagName("textarea")[0].value = promotionData.promotion.title
     }
 
     localStorageUpdate(promotionData, "formPass")
@@ -246,11 +240,11 @@ function productCard() {
         *
         */
 
-        switch (checkTypeOfFiled(fieldGroup1)) {
+        switch (checkTypeOfFiled(fieldGroup)) {
 
           case "textarea":
 
-            field1.value = promotionData.promotion.title
+            fieldGroup.getElementsByTagName("textarea")[0].value = promotionData.promotion.title
 
             // Update field_1 selected item
             if (promotionFields) {
