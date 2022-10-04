@@ -135,9 +135,13 @@ function PromotionField() {
     }
   }
 
-  init()
-  clickController()
-  formDataToLocalStorage()
+  try {
+    init()
+    clickController()
+    formDataToLocalStorage()
+  } catch (error) {
+    console.log(error)
+  }
 
 }
 

@@ -132,9 +132,13 @@ function productCard() {
   
       progressBar.forEach(element => {
   
-        if (countdown.days == "02"){
+        if (countdown.days == "03"){
           element.style.width = "42%";
           element.setAttribute("value", 42); 
+        }
+        if (countdown.days == "02"){
+          element.style.width = "46%";
+          element.setAttribute("value", 46); 
         }
         else if (countdown.days == "01"){
           element.style.width = "54%";
@@ -144,8 +148,10 @@ function productCard() {
           let getHours = countdown.hours;
       
           parseInt(getHours);
-          let sale = 50/24 * (24 - parseInt(getHours));
-          let totalSale = 50 + sale;
+          let stock = 50;
+          let lastHour = 20; // 20 = 20.00, 4 = 4.00
+          let sold = stock/lastHour * (24 - parseInt(getHours));
+          let totalSale = (stock + sold <= 100)? stock + sold : 100 ;
           element.style.width = totalSale + "%";
           element.setAttribute("value", totalSale); 
           
@@ -162,6 +168,8 @@ function productCard() {
           progressText.innerHTML = "เหลือน้อยกว่า 3 เซต";
         } else if (progressValue > 50){
           progressText.innerHTML = "ใกล้จะหมด";
+        } else if (progressValue > 40){
+          progressText.innerHTML = "ขายดี";
         }
       });
       
@@ -180,9 +188,17 @@ function productCard() {
   const productToggleController = () => {
 
     const productToggle = document.querySelectorAll(".product-toggle");
+    const productItems = document.querySelector(".product-items");
+
+
 
     if (productToggle){
       productToggle.forEach(element => {
+
+        if (productItems.classList.contains("visible")){
+          element.classList.add("rotate");
+        }
+
         element.addEventListener("click", (event)=>{
           let target = event.target.parentElement.parentElement;
     
@@ -322,17 +338,20 @@ function productCard() {
     }
   }
   
-  init()
-  countdowmController()
-  progressBarController()
-  productToggleController()
-  setLocalProductDetail()
+  try {
+    init()
+    countdowmController()
+    progressBarController()
+    productToggleController()
+    setLocalProductDetail()
 
-  if (promotionFields !== null || promotionFields.length === 0){
-    formDataToLocalStorage()
+    if (promotionFields !== null || promotionFields.length === 0){
+      formDataToLocalStorage()
+    }
+  } catch (error) {
+    console.log(error)
   }
   
-
 }
 
 window.addEventListener("DOMContentLoaded", (event) => {

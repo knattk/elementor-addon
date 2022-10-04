@@ -310,10 +310,15 @@ function promotionCard() {
     })
   } //Featured Item
 
-  init()
+  try {
+    init()
   if (promotionFields !== null || promotionFields.length === 0){
     formDataToLocalStorage()
   }
+  } catch (error) {
+    console.log(error)
+  }
+  
 }
 
 window.addEventListener("DOMContentLoaded", (event) => {

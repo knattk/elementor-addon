@@ -64,6 +64,24 @@ class ProductCard extends Widget_Base{
             ]
         );  
         $this->add_control(
+            'product_items_label',
+            [
+                'label' => __( 'Items Label', 'product-card' ),
+                'type' => \Elementor\Controls_Manager::TEXT,
+                'placeholder' => __( 'Enter your title', 'plugin-name' ),
+                'default' => 'ของแถมในเซต',
+            ]
+        ); 
+        $this->add_control(
+            'product_unit_label',
+            [
+                'label' => __( 'Unit Label', 'product-card' ),
+                'type' => \Elementor\Controls_Manager::TEXT,
+                'placeholder' => __( 'Enter your title', 'plugin-name' ),
+                'default' => 'คนสนใจ',
+            ]
+        ); 
+        $this->add_control(
             'product_button_link', 
             [
                 'label' => __( 'Button Link', 'product-card' ),
@@ -77,16 +95,6 @@ class ProductCard extends Widget_Base{
                 'label' => __( 'Class', 'product-card' ),
                 'type' => \Elementor\Controls_Manager::TEXT
             ]
-        );
-
-        $this->add_control(
-			'product_switch_discount',
-			[
-				'label' => __( 'Discount Tag', 'product-card-domain' ),
-				'type' => \Elementor\Controls_Manager::SWITCHER,
-                'return_value' => 'discount-tag',
-                'default'   => 'discount-tag'
-			]
         );
 
         $this->add_control(
@@ -462,58 +470,58 @@ class ProductCard extends Widget_Base{
             'tab' => \Elementor\Controls_Manager::TAB_STYLE,
         ]
     );
-    
+        /* Sale */
         $this->add_control(
-            'style_price_discount_heading',
+            'style_sale_price_heading',
             [
-                'label' => __( 'Discount', 'product-card' ),
+                'label' => __( 'Sale price', 'product-card' ),
                 'type' => Controls_Manager::HEADING,
                 'separator' => 'before',
             ]
         );
         $this->add_control(
-            'style_price_color',
+            'style_sale_price_color',
             [
                 'label' 		=> __( 'Color', 'product-card' ),
                 'type' 			=> Controls_Manager::COLOR,
-                'default'       => '#fff',
+                'default'       => '#BB0000',
                 'selectors'		=> [
-                    '{{WRAPPER}} span.discount' => 'color: {{VALUE}};'
+                    '{{WRAPPER}} span.sale-price' => 'color: {{VALUE}};'
                 ]
             ]
         );
         $this->add_group_control(
             Group_Control_Typography::get_type(),
             [
-                'name' => 'style_price_text',
-                'selector' => '{{WRAPPER}} span.discount',
+                'name' => 'style_sale_price_text',
+                'selector' => '{{WRAPPER}} span.sale-price',
             ]
         );
 
-        /* Sale */
+        /* Regular */
         $this->add_control(
-            'style_sale_heading',
+            'style_regular_price_heading',
             [
-                'label' => __( 'Price', 'product-card' ),
+                'label' => __( 'Regular rice', 'product-card' ),
                 'type' => Controls_Manager::HEADING,
                 'separator' => 'before',
             ]
         );
         $this->add_control(
-            'price_tag-color',
+            'style_regular_price_color',
             [
                 'label' 		=> __( 'Color', 'product-card' ),
                 'type' 			=> Controls_Manager::COLOR,
                 'selectors'		=> [
-                    '{{WRAPPER}} .sale-price' => 'color: {{VALUE}};'
+                    '{{WRAPPER}} span.regular-price' => 'color: {{VALUE}};'
                 ]
             ]
         );
         $this->add_group_control(
             Group_Control_Typography::get_type(),
             [
-                'name' => 'price_tag_text',
-                'selector' => '{{WRAPPER}} span.discount',
+                'name' => 'style_regular_price_text',
+                'selector' => '{{WRAPPER}} span.regular-price',
             ]
         );
         
@@ -657,18 +665,12 @@ class ProductCard extends Widget_Base{
 
     if ( $settings['product_list'] ) {
 
-        
-        
         echo '<div class="product-wrapper">';
         
         $product_id = 1;
         
             foreach (  $settings['product_list'] as $item ) {
 
-                
-
-
-            
                 echo    
                     '<div class="product-card" product-id="' . $product_id . '">';
                         echo '<div class="product-image">
@@ -688,7 +690,6 @@ class ProductCard extends Widget_Base{
                                 </div>
                             </div>';
                             }
-                                
 
                                 if ( $item['product_card_progress'] == 'true') {
                                     echo    '<span class="product-progress-bar">
@@ -702,10 +703,10 @@ class ProductCard extends Widget_Base{
                                     <div class="product-short-detail">';
 
                                         if($item['product_card_items']){ 
-                                            echo '<span class="product-toggle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg> ของแถมในเซต</span>'; 
+                                            echo '<span class="product-toggle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg> ' . $settings['product_items_label'] . '</span>'; 
                                         }
 
-                                    echo  '<span class="users"><span class="user-counter">' . thousandsCurrencyFormat($item['product_card_counter']) . '</span> คนสนใจ</span>
+                                    echo  '<span class="users"><span class="user-counter">' . thousandsCurrencyFormat($item['product_card_counter']) . '</span>' . $settings['product_unit_label'] . '</span>
                                     </div>
                                     <div class="product-items ' . $settings['product_switch_items'] . '">'. $item['product_card_items'] .'</div>
                                 </div>
@@ -729,8 +730,6 @@ class ProductCard extends Widget_Base{
                         </div>
                     </div>';
                 
-
-
                 $product_id = ($product_id + 1);
 
             }
