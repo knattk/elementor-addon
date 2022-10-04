@@ -657,7 +657,7 @@ class ProductCard extends Widget_Base{
     *
     *
     */
-    
+
     protected function render() {
         
         $settings = $this->get_settings_for_display();
@@ -692,7 +692,7 @@ class ProductCard extends Widget_Base{
 
                                     if ( $item['product_card_progress'] == 'true') {
                                         echo    '<span class="product-progress-bar">
-                                        <span class="progress" value="0" style="width:0%"><span class="progress-text"></span><img src="http://local.local/wp-content/uploads/2022/09/fire_28x28.png" alt=""></span>
+                                        <span class="progress" value="0" style="width:0%"><span class="progress-text"></span><img src="' . plugin_dir_url( __DIR__ ).'/includes/image/fire.png' . '" alt=""></span>
                                     </span>';
                                     }
 
