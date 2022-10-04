@@ -3,7 +3,7 @@
 * Plugin Name: Elementor Addon
 * Plugin URI: https://khwaan.com
 * Description: Elementor Addon
-* Version: 2.1.4
+* Version: 2.1.5
 * Author: Nattakan C.
 * Author URI: https://khwaan.com
 **/
