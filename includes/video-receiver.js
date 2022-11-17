@@ -11,7 +11,14 @@ function VideoReceiver() {
         const localStorageInit = () => {
             let contentFallbackData = window.localStorage.getItem("contentFallbackObj")? JSON.parse(window.localStorage.getItem("contentFallbackObj")) : null;
             let contentPackageData = window.localStorage.getItem("contentPackageObj")? JSON.parse(window.localStorage.getItem("contentPackageObj")) : contentFallbackData;
-            return contentPackageData;
+
+            if (contentFallbackData.role === "render" ){
+                contentPackageData = contentFallbackData;
+                return contentPackageData;
+            } else {
+                contentPackageData = window.localStorage.getItem("contentPackageObj")? JSON.parse(window.localStorage.getItem("contentPackageObj")) : contentFallbackData;
+                return contentPackageData;
+            }
         }
         localStorageInit ();
 

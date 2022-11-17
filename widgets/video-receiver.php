@@ -52,7 +52,18 @@ class VideoReceiver extends Widget_Base{
         );
     
     
-    
+        $this->add_control(
+            'content_role',
+            [
+                'type' => \Elementor\Controls_Manager::SELECT,
+                'label' => esc_html__( 'Type', 'video-sender' ),
+                'options' => [
+                    'render' => esc_html__( 'Render only', 'video-sender' ),
+                    'receiver' => esc_html__( 'Receiver and render', 'video-sender' ),
+                ],
+                'default' => 'receiver',
+            ]
+        );
     /* Repeater Setup */    
     $repeater = new \Elementor\Repeater();
 
@@ -60,7 +71,7 @@ class VideoReceiver extends Widget_Base{
             'content_type',
             [
                 'type' => \Elementor\Controls_Manager::SELECT,
-                'label' => esc_html__( 'Type', 'video-sender' ),
+                'label' => esc_html__( 'Role', 'video-sender' ),
                 'options' => [
                     'video' => esc_html__( 'video', 'video-sender' ),
                     'image' => esc_html__( 'image', 'video-sender' ),
@@ -195,6 +206,7 @@ class VideoReceiver extends Widget_Base{
                     <script>
                         var localStorageGenerator = () => {
                             var contentFallbackObj = {
+                                                        role:'" . $settings['content_role'] . "',
                                                         content: [";
                                         
                                                         $vid_id = 1;
