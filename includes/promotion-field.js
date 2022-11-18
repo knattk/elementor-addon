@@ -149,14 +149,9 @@ function PromotionField() {
 window.addEventListener("DOMContentLoaded", (event) => {
   jQuery(window).on("elementor/frontend/init", () => {
 
-    const promotionFieldHandler = ($element) => {
-      elementorFrontend.elementsHandler.addHandler(PromotionField, {
-        $element,
-      });
-    };
     elementorFrontend.hooks.addAction(
       "frontend/element_ready/promotion-field.default",
-      promotionFieldHandler
+      PromotionField
     );
 
   });

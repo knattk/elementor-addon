@@ -245,16 +245,9 @@ function VideoReceiver() {
 
 window.addEventListener("DOMContentLoaded", (event) => {
   jQuery(window).on("elementor/frontend/init", () => {
-
-    const videoReceiverHandler = ($element) => {
-      elementorFrontend.elementsHandler.addHandler(VideoReceiver, {
-        $element,
-      });
-    };
     elementorFrontend.hooks.addAction(
       "frontend/element_ready/video-receiver.default",
-      videoReceiverHandler
+      VideoReceiver
     );
-
   });
 })

@@ -51,14 +51,9 @@ function CountdownAuto() {
 window.addEventListener("DOMContentLoaded", (event) => {
   jQuery(window).on("elementor/frontend/init", () => {
 
-    const countdownAutoHandler = ($element) => {
-      elementorFrontend.elementsHandler.addHandler(CountdownAuto, {
-        $element,
-      });
-    };
     elementorFrontend.hooks.addAction(
       "frontend/element_ready/countdown-auto.default",
-      countdownAutoHandler
+      CountdownAuto
     );
 
   });

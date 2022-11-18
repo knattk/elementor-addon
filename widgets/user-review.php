@@ -30,9 +30,6 @@ return 'eicon-star-o';
 public function get_style_depends() {
 return ['elqu-style-css'];
 }
-public function get_script_depends() {
-return ['elqu-user-review-js'];
-}
 
 public function get_categories(){
 return ['general'];

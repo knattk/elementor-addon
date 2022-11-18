@@ -357,14 +357,9 @@ function productCard() {
 window.addEventListener("DOMContentLoaded", (event) => {
   jQuery(window).on("elementor/frontend/init", () => {
 
-    const productCardHandler = ($element) => {
-      elementorFrontend.elementsHandler.addHandler(productCard, {
-        $element,
-      });
-    };
     elementorFrontend.hooks.addAction(
       "frontend/element_ready/product-card.default",
-      productCardHandler
+      productCard
     );
 
   });

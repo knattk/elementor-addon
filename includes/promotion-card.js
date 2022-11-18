@@ -324,14 +324,9 @@ function promotionCard() {
 window.addEventListener("DOMContentLoaded", (event) => {
   jQuery(window).on("elementor/frontend/init", () => {
 
-    const promotionCardHandler = ($element) => {
-      elementorFrontend.elementsHandler.addHandler(promotionCard, {
-        $element,
-      });
-    };
     elementorFrontend.hooks.addAction(
       "frontend/element_ready/promotion-card.default",
-      promotionCardHandler
+      promotionCard
     );
 
   });
