@@ -89,13 +89,6 @@ class ProductCard extends Widget_Base{
                 'default' => '#buy',
             ]
         );
-        $this->add_control(
-            'product_card_class', 
-            [
-                'label' => __( 'Class', 'product-card' ),
-                'type' => \Elementor\Controls_Manager::TEXT
-            ]
-        );
 
         $this->add_control(
 			'product_switch_items',
@@ -270,7 +263,7 @@ class ProductCard extends Widget_Base{
                 'step' => 1,
                 'default' => 100,
                 'selectors'		=> [
-                    '{{WRAPPER}} .product-wrapper' => 'flex: 1 1 {{SIZE}}%;'
+                    '{{WRAPPER}} .product-card' => 'flex: 1 1 {{SIZE}}%;'
                 ]
             ]
         );
@@ -724,7 +717,13 @@ class ProductCard extends Widget_Base{
                                         
                                     echo '</div>
                                     
-                                    <a class="button product-button" href="' . $settings['product_button_link'] .'">' . $settings['product_button_label'] . '</a>
+                                    <a class="button product-card-button"'; 
+                                    
+                                    if($settings['product_button_link']){ 
+                                        echo 'href="' .  $settings['product_button_link'] . '"';
+                                    }
+
+                                    echo 'product-id="' . $product_id . '">' . $settings['product_button_label'] . '</a>
                                 </div>
                             </div>
                         </div>';

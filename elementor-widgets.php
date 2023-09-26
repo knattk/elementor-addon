@@ -3,7 +3,7 @@
 * Plugin Name: Elementor Addon
 * Plugin URI: https://khwaan.com
 * Description: Elementor Addon
-* Version: 2.1.8
+* Version: 2.1.9
 * Author: Nattakan C.
 * Author URI: https://khwaan.com
 **/
@@ -22,7 +22,6 @@ class Widget_Loader{
     return self::$_instance;
   }
 
-	
   private function include_widgets_files(){
 
     require_once(__DIR__ . '/widgets/promotion-card.php');
@@ -32,7 +31,6 @@ class Widget_Loader{
     require_once(__DIR__ . '/widgets/user-review.php');
     require_once(__DIR__ . '/widgets/video-sender.php');
     require_once(__DIR__ . '/widgets/video-receiver.php');
-
 
   }
 
@@ -54,7 +52,6 @@ class Widget_Loader{
 
     wp_register_style( 'elmta-style-css', plugins_url( '/includes/style.css', __FILE__ ) );
     wp_register_style( 'elmta-video-css', plugins_url( '/includes/video.css', __FILE__ ) );
-
 
   }
   public function widget_scripts() {
