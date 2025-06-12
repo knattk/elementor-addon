@@ -69,7 +69,7 @@ class ProductCard extends Widget_Base{
                 'label' => __( 'Items Label', 'product-card' ),
                 'type' => \Elementor\Controls_Manager::TEXT,
                 'placeholder' => __( 'Enter your title', 'plugin-name' ),
-                'default' => 'ของแถมในเซต',
+                'default' => 'สิ่งที่ได้รับ',
             ]
         ); 
         $this->add_control(
@@ -78,15 +78,32 @@ class ProductCard extends Widget_Base{
                 'label' => __( 'Unit Label', 'product-card' ),
                 'type' => \Elementor\Controls_Manager::TEXT,
                 'placeholder' => __( 'Enter your title', 'plugin-name' ),
-                'default' => 'คนสนใจ',
+                'default' => ' คนสนใจ',
             ]
         ); 
         $this->add_control(
             'product_button_link', 
             [
-                'label' => __( 'Button Link', 'product-card' ),
-                'type' => \Elementor\Controls_Manager::TEXT,
-                'default' => '#buy',
+				'label' => esc_html__( 'Button Link', 'product-card' ),
+				'type' => \Elementor\Controls_Manager::URL,
+				'options' => [ 'url', 'is_external', 'nofollow' ],
+				'default' => [
+					'url' => '#buy',
+					'is_external' => false,
+					'nofollow' => false,
+					// 'custom_attributes' => '',
+				],
+				'label_block' => true,
+                'dynamic' => [
+                    'active' => true,
+                ],
+			]
+        );
+        $this->add_control(
+            'product_card_class', 
+            [
+                'label' => __( 'Class', 'product-card' ),
+                'type' => \Elementor\Controls_Manager::TEXT
             ]
         );
 
@@ -263,7 +280,7 @@ class ProductCard extends Widget_Base{
                 'step' => 1,
                 'default' => 100,
                 'selectors'		=> [
-                    '{{WRAPPER}} .product-card' => 'flex: 1 1 {{SIZE}}%;'
+                    '{{WRAPPER}} .product-wrapper' => 'flex: 1 1 {{SIZE}}%;'
                 ]
             ]
         );
@@ -652,90 +669,113 @@ class ProductCard extends Widget_Base{
     */
 
     protected function render() {
-        
         $settings = $this->get_settings_for_display();
-
-        if ( $settings['product_list'] ) {
-
+    
+        // Safely add link attributes
+        if (!empty($settings['product_button_link']['url'])) {
+            $this->add_link_attributes('product_button_link', $settings['product_button_link']);
+        }
+    
+        if (!empty($settings['product_list']) && is_array($settings['product_list'])) {
             echo '<div class="product-wrapper">';
-            
             $product_id = 1;
-            
-                foreach (  $settings['product_list'] as $item ) {
-
-                    echo    
-                        '<div class="product-card" product-id="' . $product_id . '">';
-                            echo '<div class="product-image">
-                                <img src="' . $item['product_card_image']['url'] . '" alt="'.$item['product_card_title'].'">
-                            </div>
-                            <div class="product-content">
-                                <div class="product-heading">';
-
-                                if ( $item['product_card_countdown'] == 'true') {
-                                    echo    '<div class="product-countdown">
-                                    <span>หมดเวลาใน</span>
-                                    <div class="product-countdown-wrapper">
-                                        <span class="product-countdown-digits product-countdown-days">00</span> : 
-                                        <span class="productcountdown-digits product-countdown-hours">00</span> : 
-                                        <span class="product-countdown-digits product-countdown-minutes">00</span> : 
-                                        <span class="product-countdown-digits product-countdown-seconds">00</span>		
-                                    </div>
-                                </div>';
-                                }
-
-                                    if ( $item['product_card_progress'] == 'true') {
-                                        echo    '<span class="product-progress-bar">
-                                        <span class="progress" value="0" style="width:0%"><span class="progress-text"></span><img src="' . plugin_dir_url( __DIR__ ).'/includes/image/fire.png' . '" alt=""></span>
-                                    </span>';
-                                    }
-
-                                    echo '
-                                    <h3>'. $item['product_card_title'] .'</h3>
-                                    <div class="product-detail">
-                                        <div class="product-short-detail">';
-
-                                            if($item['product_card_items']){ 
-                                                echo '<span class="product-toggle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg> ' . $settings['product_items_label'] . '</span>'; 
-                                            }
-
-                                        echo  '<span class="users"><span class="user-counter">' . $this->thousandsCurrencyFormat($item['product_card_counter']) . '</span>' . $settings['product_unit_label'] . '</span>
-                                        </div>
-                                        <div class="product-items ' . $settings['product_switch_items'] . '">'. $item['product_card_items'] .'</div>
-                                    </div>
-                                </div>
-                                <div class="product-footer">
-                                    <div class="price-wrapper">';
-                                        
-                                        if($item['product_card_discount']){ 
-                                            echo '<span class="discount"> -' . $item['product_card_discount'] . '% </span>'; 
-                                        } 
-                                        
-                                        if($item['product_card_price_sale']){ 
-                                            echo '<div class="price-group"><span class="sale-price">'. number_format($item['product_card_price_sale']) .'</span><span class="regular-price">'. number_format($item['product_card_price_regular']) .'</span></div>';
-
-                                        } 
-                                        
-                                    echo '</div>
-                                    
-                                    <a class="button product-card-button"'; 
-                                    
-                                    if($settings['product_button_link']){ 
-                                        echo 'href="' .  $settings['product_button_link'] . '"';
-                                    }
-
-                                    echo 'product-id="' . $product_id . '">' . $settings['product_button_label'] . '</a>
-                                </div>
-                            </div>
-                        </div>';
-                    
-                    $product_id = ($product_id + 1);
-
+    
+            foreach ($settings['product_list'] as $item) {
+                // Start product card
+                echo '<div class="product-card" product-id="' . esc_attr($product_id) . '">';
+    
+                // Product image
+                if (!empty($item['product_card_image']['url'])) {
+                    echo '<div class="product-image">
+                            <img src="' . esc_url($item['product_card_image']['url']) . '" alt="' . esc_attr($item['product_card_title'] ?? '') . '">
+                          </div>';
                 }
-
-            echo '</div>';
-            
+    
+                echo '<div class="product-content">
+                        <div class="product-heading">';
+    
+                // Countdown
+                if (!empty($item['product_card_countdown']) && $item['product_card_countdown'] === 'true') {
+                    echo '<div class="product-countdown">
+                            <span>หมดเวลาใน</span>
+                            <div class="product-countdown-wrapper">
+                                <span class="product-countdown-digits product-countdown-days">--</span> : 
+                                <span class="productcountdown-digits product-countdown-hours">--</span> : 
+                                <span class="product-countdown-digits product-countdown-minutes">--</span> : 
+                                <span class="product-countdown-digits product-countdown-seconds">--</span>		
+                            </div>
+                          </div>';
+                }
+    
+                // Progress Bar
+                if (!empty($item['product_card_progress']) && $item['product_card_progress'] === 'true') {
+                    $fire_img_url = esc_url(plugin_dir_url(__DIR__) . '/includes/image/fire.png');
+                    echo '<span class="product-progress-bar">
+                            <span class="progress" value="0" style="width:0%">
+                                <span class="progress-text"></span>
+                                <img src="' . $fire_img_url . '" alt="">
+                            </span>
+                          </span>';
+                }
+    
+                echo '<h3 class="product-name">' . esc_html($item['product_card_title'] ?? '') . '</h3>';
+    
+                echo '<div class="product-detail">
+                        <div class="product-short-detail">';
+    
+                // Toggle label and user counter
+                if (!empty($item['product_card_items'])) {
+                    echo '<span class="product-toggle">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/>
+                            </svg> 
+                            ' . esc_html($settings['product_items_label'] ?? '') . '
+                          </span>';
+                }
+    
+                echo '<span class="users">
+                        <span class="user-counter">' . esc_html($this->thousandsCurrencyFormat($item['product_card_counter'] ?? 0)) . '</span>' .
+                        esc_html($settings['product_unit_label'] ?? '') . '
+                      </span>
+                    </div>';
+    
+                // Product items detail
+                if (!empty($item['product_card_items'])) {
+                    echo '<div class="product-items ' . esc_attr($settings['product_switch_items'] ?? '') . '">' .
+                            wp_kses_post($item['product_card_items']) . 
+                         '</div>';
+                }
+    
+                echo '</div> <!-- /product-detail -->
+                    </div> <!-- /product-heading -->
+                    <div class="product-footer">
+                        <div class="price-wrapper">';
+    
+                if (!empty($item['product_card_discount'])) {
+                    echo '<span class="discount"> -' . esc_html($item['product_card_discount']) . '% </span>';
+                }
+    
+                if (!empty($item['product_card_price_sale'])) {
+                    echo '<div class="price-group">
+                            <span class="sale-price">' . esc_html(number_format(floatval($item['product_card_price_sale']))) . '</span>
+                            <span class="regular-price">' . esc_html(number_format(floatval($item['product_card_price_regular'] ?? 0))) . '</span>
+                          </div>';
+                }
+    
+                echo '</div>
+                    <a class="button product-button" href="' . esc_url($settings['product_button_link']['url']) . '">' .
+                        esc_html($settings['product_button_label'] ?? 'Buy Now') .
+                    '</a>
+                    </div>
+                  </div>
+                </div>';
+    
+                $product_id++;
             }
-
-        } 
-
+    
+            echo '</div>';
+        }
+    }
+    
+    
 }

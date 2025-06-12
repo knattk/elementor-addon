@@ -1,60 +1,46 @@
 function productCard() {
-    let promotionData = {
+    //Global variable
+    var promotionData = {
         promotion: { id: '', title: '', item: '', pricereg: '', pricesale: '' },
         duedate: '',
         name: '',
         phone: '',
     };
-    let countdown = { days: '00', hours: '00', minutes: '00', seconds: '00' };
-    let selectedPromotionId = 1;
+    var countdown = { days: '00', hours: '00', minutes: '00', seconds: '00' };
 
-    const productCards = document.querySelectorAll('.product-card');
-    const productButtons = document.querySelectorAll('.product-card-button');
-    const field_1 = document.querySelector('.elementor-field-group-field_1');
+    const card1 = document.querySelector('.product-card');
+    const buttons = document.querySelectorAll('.product-button');
+    const fieldGroup = document.querySelector('.elementor-field-group-field_1');
+    const promotionFields = document.querySelectorAll('.promotion-field'); // Promotion Field Widget support
 
-    // Update promotionData
-    const updatePromotionData = () => {
-        const selectedCard = document.querySelector(
-            `[product-id="${selectedPromotionId}"]`
-        );
-
-        promotionData.promotion.id = selectedPromotionId
-            ? selectedPromotionId
+    const promotionDataSet = (parent) => {
+        promotionData.promotion.id = parent.getAttribute('product-id');
+        promotionData.promotion.title = parent.getElementsByTagName('h3')[0]
+            ? parent.getElementsByTagName('h3')[0].innerHTML
             : '';
-        promotionData.promotion.title = selectedCard.getElementsByTagName(
-            'h3'
-        )[0]
-            ? selectedCard.getElementsByTagName('h3')[0].innerHTML
+        promotionData.promotion.item = parent.querySelector('.product-items')
+            ? parent.querySelector('.product-items').innerHTML
             : '';
-        promotionData.promotion.item = selectedCard.querySelector(
-            '.product-items'
-        )
-            ? selectedCard.querySelector('.product-items').innerHTML
-            : '';
-        promotionData.promotion.pricereg = selectedCard.querySelector(
+        promotionData.promotion.pricereg = parent.querySelector(
             '.regular-price'
         )
-            ? selectedCard.querySelector('.regular-price').innerHTML
+            ? parent.querySelector('.regular-price').innerHTML
             : '';
-        promotionData.promotion.pricesale = selectedCard.querySelector(
-            '.sale-price'
-        )
-            ? selectedCard.querySelector('.sale-price').innerHTML
+        promotionData.promotion.pricesale = parent.querySelector('.sale-price')
+            ? parent.querySelector('.sale-price').innerHTML
             : '';
-
-        setPromotionDataToLocalStorage();
-        updatePromotionFieldValue();
     };
-    // Set promotion data to localStorage
-    const setPromotionDataToLocalStorage = () => {
-        if (promotionData) {
-            localStorage.setItem(
-                'promotionData',
-                JSON.stringify(promotionData)
-            );
+
+    const localStorageInitialize = (receiver, key) => {
+        if (localStorage.getItem(key)) {
+            receiver = JSON.parse(localStorage[key]);
         }
     };
-    // Check type of input field
+
+    const localStorageUpdate = (source, key) => {
+        localStorage.setItem(key, JSON.stringify(source));
+    };
+
     const checkTypeOfFiled = (field) => {
         if (field) {
             if (field.classList.contains('elementor-field-type-textarea')) {
@@ -74,42 +60,26 @@ function productCard() {
             }
         }
     };
-    // Update field_1 value
-    const updatePromotionFieldValue = () => {
-        let local = localStorage.getItem('promotionData');
-        let typeOfField = checkTypeOfFiled(field_1);
 
-        if (typeOfField == 'textarea') {
-            field_1.getElementsByTagName('textarea')[0].value = local
-                ? JSON.parse(local).promotion.title
-                : promotionData.promotion.title;
+    /*
+     *
+     * Init function
+     *
+     */
 
-            // Support Promotion Field widget
-            let fieldCards = document.querySelectorAll('.promotion-field');
+    const init = () => {
+        // Get data from "formPass" then put it into ${promotionData}
+        localStorageInitialize(promotionData, 'formPass');
 
-            if (fieldCards) {
-                fieldCards.forEach((field) => {
-                    field.classList.remove('selected');
-                });
-                // select new card
+        promotionDataSet(card1);
 
-                let selectedField = document.querySelector(
-                    `.promotion-field[promotion-id="${selectedPromotionId}"]`
-                );
-                if (selectedField) {
-                    selectedField.classList.add('selected');
-                }
-                return;
-            }
-        } else if (typeOfField == 'radio') {
-            let radio = document.querySelector(
-                `#form-field-field_1-${selectedPromotionId - 1}`
-            );
-            if (radio) {
-                radio.checked = true;
-            }
-            return;
+        // Update field_1
+        if (checkTypeOfFiled(fieldGroup) == 'textarea') {
+            fieldGroup.getElementsByTagName('textarea')[0].value =
+                promotionData.promotion.title;
         }
+
+        localStorageUpdate(promotionData, 'formPass');
     };
 
     /*
@@ -243,48 +213,155 @@ function productCard() {
      */
 
     const productToggleController = () => {
-        const productToggle = document.querySelectorAll('.product-toggle');
-        const productItems = document.querySelector('.product-items');
+        const productToggles = document.querySelectorAll('.product-toggle');
 
-        if (productToggle) {
-            productToggle.forEach((element) => {
-                if (productItems.classList.contains('visible')) {
-                    element.classList.add('rotate');
+        if (productToggles.length > 0) {
+            productToggles.forEach((toggle) => {
+                const relatedProductItems = toggle
+                    .closest('.product-content')
+                    .querySelector('.product-items');
+                if (relatedProductItems.classList.contains('visible')) {
+                    toggle.classList.add('rotate');
                 }
 
-                element.addEventListener('click', (event) => {
-                    let target = event.target.parentElement.parentElement;
-
+                toggle.addEventListener('click', (event) => {
                     try {
-                        event.target.classList.toggle('rotate');
-                        target
-                            .querySelector('.product-items')
-                            .classList.toggle('visible');
-                    } catch (error) {}
+                        console.log('click');
+                        toggle.classList.toggle('rotate');
+                        relatedProductItems.classList.toggle('visible');
+                    } catch (error) {
+                        console.error(
+                            'Error toggling product items visibility:',
+                            error
+                        );
+                    }
                 });
             });
         }
     };
 
-    const init = () => {
-        localStorage.removeItem('promotionData');
+    /*
+     *
+     * Button Click Listening
+     *
+     */
 
-        updatePromotionFieldValue();
-        // Get selected promotion data
-        productButtons.forEach((button) => {
-            button.addEventListener('click', (e) => {
-                // get product-id
-                selectedPromotionId = button.getAttribute('product-id');
-                updatePromotionData();
-            });
+    const setLocalProductDetail = () => {
+        buttons.forEach((item) => {
+            item.addEventListener('click', () => {
+                let card = item.closest('.product-card'); // button's parent
+                let productId = card.getAttribute('product-id'); // this card's product-id
+
+                /*
+                 *
+                 * LocalStorage
+                 *
+                 */
+
+                // Get data from "formPass" then put it into ${promotionData}
+                localStorageInitialize(promotionData, 'formPass');
+
+                // Set ${promotionData} value from this card's data
+                promotionDataSet(card);
+
+                // Update localStorage
+                localStorageUpdate(promotionData, 'formPass');
+
+                /*
+                 *
+                 * Form field_1 support
+                 *
+                 */
+
+                switch (checkTypeOfFiled(fieldGroup)) {
+                    case 'textarea':
+                        fieldGroup.getElementsByTagName('textarea')[0].value =
+                            promotionData.promotion.title;
+
+                        // Update field_1 selected item
+                        if (promotionFields) {
+                            promotionFields.forEach((element) => {
+                                element.classList.remove('selected');
+
+                                let fieldPromotionId =
+                                    element.getAttribute('promotion-id');
+                                if (productId == fieldPromotionId) {
+                                    element.classList.add('selected');
+                                }
+                            });
+                        }
+
+                        break;
+
+                    case 'radio':
+                        document.getElementById(
+                            'form-field-field_1-' + (productId - 1)
+                        ).checked = true;
+
+                        break;
+
+                    case 'checkbox':
+                        console.log('checkbox - currently not support.');
+                        break;
+
+                    case 'dropdown':
+                        document.getElementById(
+                            'form-field-field_1'
+                        ).selectedIndex = productId - 1;
+                        break;
+
+                    default: {
+                        break;
+                    }
+                }
+            }); // click eventListener
         });
+    };
 
+    /*
+     *
+     * Form submission
+     *
+     */
+
+    const formDataToLocalStorage = () => {
+        const formThank = document.querySelector('[id*="thank"]'); // Form
+
+        if (formThank) {
+            // If form_thank is not null
+
+            // get correct form ID
+            const form = document.getElementById(formThank.id);
+            const formField2 = document.getElementById('form-field-field_2');
+            const formField3 = document.getElementById('form-field-field_3');
+
+            form.addEventListener('submit', function () {
+                // Get data from "formPass" then put it into ${promotionData}
+                localStorageInitialize(promotionData, 'formPass');
+
+                // add input data into ${promotionData}
+                promotionData.name = formField2 ? formField2.value : null; // name
+                promotionData.phone = formField3 ? formField3.value : null; // phone
+
+                // Update localStorage
+                localStorageUpdate(promotionData, 'formPass');
+            }); // End Even Listener
+        }
+    };
+
+    try {
+        init();
         countdowmController();
         progressBarController();
         productToggleController();
-    };
+        setLocalProductDetail();
 
-    init();
+        if (promotionFields !== null || promotionFields.length === 0) {
+            formDataToLocalStorage();
+        }
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 window.addEventListener('DOMContentLoaded', (event) => {

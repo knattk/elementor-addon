@@ -46,6 +46,15 @@ return ['general'];
 
 protected function _register_controls(){
 
+    /*
+    *
+    *
+    * DATA
+    * CONTROLLER
+    *
+    *
+    */
+
     /* Tab Title */
     $this->start_controls_section(
         'content_section',
@@ -54,7 +63,9 @@ protected function _register_controls(){
                 'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
             ]
         );
-    
+        
+
+
         /* Repeater Setup */    
         $repeater = new \Elementor\Repeater();
 
@@ -110,6 +121,9 @@ protected function _register_controls(){
             ]
         );
 
+
+
+        
         /* Add Repeater */
             
         $this->add_control(
@@ -127,7 +141,10 @@ protected function _register_controls(){
                 ]
         );
     
+
     $this->end_controls_section();
+
+
 
     /*
     *
@@ -184,6 +201,8 @@ protected function _register_controls(){
         
     $this->end_controls_section();
 
+
+
     /* Card */
     $this->start_controls_section(
         'style_card',
@@ -232,16 +251,6 @@ protected function _register_controls(){
                 ]
             ]
         );
-
-        $this->add_group_control(
-			Group_Control_Border::get_type(),
-			[
-				'name' => 'card_border',
-				'selector' => '{{WRAPPER}} .user-review-card',
-				'separator' => 'before',
-			]
-		);
-    
         $this->add_responsive_control(
             'card-padding',
             [
@@ -265,7 +274,6 @@ protected function _register_controls(){
                 ],
             ]
         );
-
         $this->add_group_control(
             \Elementor\Group_Control_Box_Shadow::get_type(),
             [
@@ -319,11 +327,12 @@ protected function _register_controls(){
             ]
         );
 
+        
         // Star
         $this->add_control(
             'style_content_star',
             [
-                'label' => __( 'Rating', 'user-review' ),
+                'label' => __( 'Reviewer name', 'user-review' ),
                 'type' => Controls_Manager::HEADING,
                 'separator' => 'before',
             ]
@@ -344,7 +353,7 @@ protected function _register_controls(){
             [
                 'label' 		=> __( 'Color', 'user-review' ),
                 'type' 			=> Controls_Manager::COLOR,
-                'default'       => '#FFC400',
+                'default'       => '#000',
                 'selectors'		=> [
                     '{{WRAPPER}} .review-rating' => 'color: {{VALUE}};'
                 ]
@@ -355,7 +364,7 @@ protected function _register_controls(){
         $this->add_control(
             'style_content_review',
             [
-                'label' => __( 'Description', 'user-review' ),
+                'label' => __( 'Reviewer name', 'user-review' ),
                 'type' => Controls_Manager::HEADING,
                 'separator' => 'before',
             ]
@@ -376,7 +385,7 @@ protected function _register_controls(){
             [
                 'label' 		=> __( 'Color', 'user-review' ),
                 'type' 			=> Controls_Manager::COLOR,
-                'default'       => '#5E5E5E',
+                'default'       => '#000',
                 'selectors'		=> [
                     '{{WRAPPER}} .review-content' => 'color: {{VALUE}};'
                 ]
@@ -392,6 +401,7 @@ protected function _register_controls(){
 
     }
 
+
     /*
     *
     *
@@ -401,46 +411,42 @@ protected function _register_controls(){
     *
     */
 
-
     protected function render() {
-        
         $settings = $this->get_settings_for_display();
-
-        if ( $settings['list'] ) {
-
-                echo '<div class="user-review-container">';
-                    
-                foreach (  $settings['list'] as $item ) {
-     
-                    $stars = $item['user-rating'];
-                    $name = $item['user-name'];
-
-                    $len = mb_strlen($name, 'UTF-8');
-                    if ($len > 3) {
-                        $name = substr_replace($name, str_repeat("*", $len - 3), -($len - 3));
-                    }
-
-                    echo '
-                    <div class="user-review-card"><div class="user-image">
-                            <figure class="image">
-                                <img src="' . $item['user-image']['url'] . '" alt="' . $item['user-name'] . '">
-                            </figure>
-                        </div>
-
-                        <div class="user-review">
-                            <h4 class="review-name">' .  $name . '</h4>
-                            <div class="review-rating" data-rating="' . $item['user-rating'] .'">'. str_repeat("★", $stars) . '</div>
-
-
-                            <div class="review-content">' . $item['user-review'] . '</div>
-                        </div></div>';
-            
-                }
-                
+    
+        if (!empty($settings['list']) && is_array($settings['list'])) {
+            echo '<div class="user-review-container">';
+    
+            foreach ($settings['list'] as $item) {
+                // Sanitize fields
+                $name        = isset($item['user-name']) ? sanitize_text_field($item['user-name']) : 'ผู้ใช้ไม่ระบุชื่อ';
+                $masked_name = mb_substr($name, 0, max(0, mb_strlen($name) - 5)) . '*****';
+                $stars       = isset($item['user-rating']) ? absint($item['user-rating']) : 0;
+                $stars       = min($stars, 5); // Max 5 stars
+                $star_display = str_repeat('★', $stars);
+    
+                $image_url   = isset($item['user-image']['url']) ? esc_url($item['user-image']['url']) : '';
+                $review      = isset($item['user-review']) ? wp_kses_post($item['user-review']) : '';
+    
+                echo '<div class="user-review-card">';
+                    echo '<div class="user-image">';
+                        echo '<figure class="image">';
+                            echo '<img src="' . $image_url . '" alt="' . esc_attr($name) . '">';
+                        echo '</figure>';
+                    echo '</div>';
+    
+                    echo '<div class="user-review">';
+                        echo '<h4 class="review-name">' . esc_html($masked_name) . '</h4>';
+                        echo '<div class="review-rating" data-rating="' . esc_attr($stars) . '">' . esc_html($star_display) . '</div>';
+                        echo '<div class="review-content">' . $review . '</div>';
+                    echo '</div>';
                 echo '</div>';
-
             }
-
-    } 
+    
+            echo '</div>';
+        }
+    }
+    
+    
 
 }

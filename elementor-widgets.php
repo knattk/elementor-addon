@@ -3,7 +3,7 @@
 * Plugin Name: Elementor Addon
 * Plugin URI: https://khwaan.com
 * Description: Elementor Addon
-* Version: 2.1.9
+* Version: 2.3.4
 * Author: Nattakan C.
 * Author URI: https://khwaan.com
 **/
@@ -22,15 +22,16 @@ class Widget_Loader{
     return self::$_instance;
   }
 
+	
   private function include_widgets_files(){
 
-    require_once(__DIR__ . '/widgets/promotion-card.php');
     require_once(__DIR__ . '/widgets/promotion-field.php');
     require_once(__DIR__ . '/widgets/product-card.php');
     require_once(__DIR__ . '/widgets/countdown-auto.php');
     require_once(__DIR__ . '/widgets/user-review.php');
     require_once(__DIR__ . '/widgets/video-sender.php');
     require_once(__DIR__ . '/widgets/video-receiver.php');
+    require_once(__DIR__ . '/widgets/scroll-to-redirect.php');
 
   }
 
@@ -38,13 +39,13 @@ class Widget_Loader{
 
     $this->include_widgets_files();
 
-    \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PromotionCard());
     \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PromotionField());
     \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductCard());
     \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\CountdownAuto());
     \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\UserReview());
     \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\VideoSender());
     \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\VideoReceiver());
+    \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ScrollToRedirect());
 
   }
 
@@ -53,15 +54,16 @@ class Widget_Loader{
     wp_register_style( 'elmta-style-css', plugins_url( '/includes/style.css', __FILE__ ) );
     wp_register_style( 'elmta-video-css', plugins_url( '/includes/video.css', __FILE__ ) );
 
+
   }
   public function widget_scripts() {
 
-    wp_register_script( 'elmta-promotion-card-js', plugins_url( '/includes/promotion-card.js', __FILE__ ) );
     wp_register_script( 'elmta-promotion-field-js', plugins_url( '/includes/promotion-field.js', __FILE__ ) );
     wp_register_script( 'elmta-product-card-js', plugins_url( '/includes/product-card.js', __FILE__ ) );
     wp_register_script( 'elmta-countdown-auto-js', plugins_url( '/includes/countdown-auto.js', __FILE__ ) );
     wp_register_script( 'elmta-user-review-js', plugins_url( '/includes/user-review.js', __FILE__ ) );
     wp_register_script( 'elmta-video-receiver-js', plugins_url( '/includes/video-receiver.js', __FILE__ ) );
+    wp_register_script( 'elmta-scroll-to-redirect-js', plugins_url( '/includes/scroll-to-redirect.js', __FILE__ ) );
     
   }
 

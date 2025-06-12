@@ -1,164 +1,116 @@
 function PromotionField() {
-    //Global variable
-    var promotionData = {
+    const promotionFields = document.querySelectorAll('.promotion-field');
+    const fieldGroup = document.querySelector('.elementor-field-group-field_1');
+    const promotionData = {
         promotion: { id: '', title: '', item: '', pricereg: '', pricesale: '' },
         duedate: '',
         name: '',
         phone: '',
     };
-    const promotionFields = document.querySelectorAll('.promotion-field');
-    const field_1 = document.querySelector('.elementor-field-group-field_1');
 
-    let selectedPromotionId = 1;
+    const getInnerHTML = (parent, selector) =>
+        parent.querySelector(selector)?.innerHTML || '';
 
-    const getChildData = (parent, child) => {
-        return parent.querySelector(child)
-            ? parent.querySelector(child).innerHTML
-            : '';
-    };
-
-    const setPromotionData = (parent) => {
-        promotionData.promotion.id = parent.getAttribute('promotion-id')
-            ? parent.getAttribute('promotion-id')
-            : '';
-        promotionData.promotion.title = getChildData(parent, '.promotion-title')
-            ? getChildData(parent, '.promotion-title')
-            : '';
-        promotionData.promotion.item = getChildData(parent, '.promotion-items')
-            ? getChildData(parent, '.promotion-items')
-            : 'null';
-        promotionData.promotion.pricereg = getChildData(
-            parent,
+    const setPromotionData = (element) => {
+        promotionData.promotion.id = element.getAttribute('promotion-id');
+        promotionData.promotion.title = getInnerHTML(
+            element,
+            '.promotion-title'
+        );
+        promotionData.promotion.item = getInnerHTML(
+            element,
+            '.promotion-items'
+        );
+        promotionData.promotion.pricereg = getInnerHTML(
+            element,
             '.regular-price'
-        )
-            ? getChildData(parent, '.regular-price')
-            : '';
-        promotionData.promotion.pricesale = getChildData(parent, '.sale-price')
-            ? getChildData(parent, '.sale-price')
-            : '';
+        );
+        promotionData.promotion.pricesale = getInnerHTML(
+            element,
+            '.sale-price'
+        );
     };
 
-    const localStorageInitialize = (receiver, storageKey) => {
-        if (localStorage.getItem(storageKey)) {
-            receiver = JSON.parse(localStorage[storageKey]);
-        }
+    const updateLocalStorage = (key, data) => {
+        localStorage.setItem(key, JSON.stringify(data));
     };
 
-    const localStorageUpdate = (source, storageKey) => {
-        localStorage.setItem(storageKey, JSON.stringify(source));
+    const loadLocalStorage = (key) => {
+        const saved = localStorage.getItem(key);
+        return saved ? JSON.parse(saved) : null;
     };
 
-    const checkTypeOfFiled = (field) => {
-        if (field) {
-            if (field.classList.contains('elementor-field-type-textarea')) {
-                return 'textarea';
-            } else if (field.classList.contains('elementor-field-type-radio')) {
-                return 'radio';
-            } else if (
-                field.classList.contains('elementor-field-type-checkbox')
-            ) {
-                return 'checkbox';
-            } else if (
-                field.classList.contains('elementor-field-type-select')
-            ) {
-                return 'dropdown';
-            } else {
-                return null;
-            }
-        }
+    const getFieldType = (element) => {
+        if (!element) return null;
+        if (element.classList.contains('elementor-field-type-textarea'))
+            return 'textarea';
+        if (element.classList.contains('elementor-field-type-radio'))
+            return 'radio';
+        if (element.classList.contains('elementor-field-type-checkbox'))
+            return 'checkbox';
+        if (element.classList.contains('elementor-field-type-select'))
+            return 'dropdown';
+        return null;
     };
-    /*
-     *
-     * Init function
-     *
-     */
 
-    const init = () => {
-        // Add .selected class to first promotion
-        promotionFields[0].classList.add('selected');
+    const setDefaultField = () => {
+        if (!promotionFields.length) return;
 
-        // set default promotion
-        setPromotionData(promotionFields[0]);
+        const defaultField = promotionFields[0];
+        defaultField.classList.add('selected');
+        setPromotionData(defaultField);
+        updateLocalStorage('formPass', promotionData);
 
-        // Update localStorage
-        localStorageUpdate(promotionData, 'formPass');
-
-        // Update field_1
-        if (checkTypeOfFiled(field_1) == 'textarea') {
-            field_1.getElementsByTagName('textarea')[0].value =
+        if (getFieldType(fieldGroup) === 'textarea') {
+            fieldGroup.querySelector('textarea').value =
                 promotionData.promotion.title;
         }
     };
 
-    /*
-     *
-     * Click Listening
-     *
-     */
+    const handleCardClicks = () => {
+        promotionFields.forEach((card) => {
+            card.addEventListener('click', () => {
+                promotionFields.forEach((c) => c.classList.remove('selected'));
+                card.classList.add('selected');
+                setPromotionData(card);
+                updateLocalStorage('formPass', promotionData);
 
-    const clickController = () => {
-        promotionFields.forEach((field) => {
-            field.addEventListener('click', function () {
-                promotionFields.forEach((element) => {
-                    element.classList.remove('selected');
-                });
-
-                // Add .selected to this card
-                this.classList.add('selected');
-
-                // Store this card info in ${promotionData}
-                setPromotionData(field);
-
-                // Update localStorage
-                localStorageUpdate(promotionData, 'formPass');
-
-                // Update field_1
-                if (checkTypeOfFiled(field_1) == 'textarea') {
-                    field_1.getElementsByTagName('textarea')[0].value =
+                if (getFieldType(fieldGroup) === 'textarea') {
+                    fieldGroup.querySelector('textarea').value =
                         promotionData.promotion.title;
                 }
             });
         });
     };
 
-    /*
-     *
-     * Form submission
-     *
-     */
+    const hookFormSubmission = () => {
+        const formThank = document.querySelector('[id*="thank"]');
+        if (!formThank) return;
 
-    const formDataToLocalStorage = () => {
-        const formThank = document.querySelector('[id*="thank"]'); // Form
+        const form = document.getElementById(formThank.id);
+        const nameField = document.getElementById('form-field-field_2');
+        const phoneField = document.getElementById('form-field-field_3');
 
-        if (formThank) {
-            // get correct form ID
-            const form = document.getElementById(formThank.id);
-            const formField2 = document.getElementById('form-field-field_2');
-            const formField3 = document.getElementById('form-field-field_3');
+        if (!form) return;
 
-            form.addEventListener('submit', function () {
-                localStorageInitialize(promotionData, 'formPass');
-
-                // add input data into ${promotionData}
-                promotionData.name = formField2 ? formField2.value : null; // name
-                promotionData.phone = formField3 ? formField3.value : null; // phone
-
-                // Update localStorage
-                localStorageUpdate(promotionData, 'formPass');
-            }); // End Even Listener
-        }
+        form.addEventListener('submit', () => {
+            const savedData = loadLocalStorage('formPass') || promotionData;
+            savedData.name = nameField?.value || '';
+            savedData.phone = phoneField?.value || '';
+            updateLocalStorage('formPass', savedData);
+        });
     };
 
     try {
-        init();
-        clickController();
-        formDataToLocalStorage();
-    } catch (error) {
-        console.log(error);
+        setDefaultField();
+        handleCardClicks();
+        hookFormSubmission();
+    } catch (err) {
+        console.error('[PromotionField] Error:', err);
     }
 }
 
-window.addEventListener('DOMContentLoaded', (event) => {
+window.addEventListener('DOMContentLoaded', () => {
     jQuery(window).on('elementor/frontend/init', () => {
         elementorFrontend.hooks.addAction(
             'frontend/element_ready/promotion-field.default',
