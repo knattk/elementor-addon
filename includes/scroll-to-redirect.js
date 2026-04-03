@@ -1,17 +1,29 @@
-function ScrollToRedirect() {
-    const lineURL =
-        sessionStorage.getItem('lineURL') ||
-        document.querySelector('.scroll-to-redirect')?.getAttribute('data-to');
-    const cancelBtn = document.querySelector('.button-cancel');
-    const countdownEl = document.querySelector('.cancel-countdown');
-    const autoRedirectPopup = document.querySelector('.auto-redirect-popup');
-    const redirectTargets = document.querySelectorAll('.redirect-start');
+function ScrollToRedirect($scope) {
+    const scopeEl = $scope && $scope[0] ? $scope[0] : document;
+    const widget = scopeEl.querySelector('.scroll-to-redirect');
 
+    if (!widget) return;
+
+    const lineURL =
+        sessionStorage.getItem('lineURL') || widget.getAttribute('data-to');
+    const cancelBtn = widget.querySelector('.button-cancel');
+    const countdownEl = widget.querySelector('.cancel-countdown');
+    const mode = widget.getAttribute('data-mode') || 'inline';
+    const isPopupMode = mode === 'popup';
     const options = { threshold: 0.9 };
+
     let clickStop = false;
     let interval = null;
+    let hasTriggeredRedirect = false;
+
+    if (!lineURL) return;
 
     const startCountdown = (callback, seconds = 4) => {
+        if (interval) {
+            clearInterval(interval);
+            interval = null;
+        }
+
         let counter = seconds;
         if (countdownEl) countdownEl.textContent = ` (${counter})`;
 
@@ -29,27 +41,31 @@ function ScrollToRedirect() {
     };
 
     const handleRedirectTrigger = () => {
-        const inEditor = document.querySelector('.elementor-editor-active');
-        if (inEditor || clickStop || !lineURL) return;
+        const inEditor = document.body.classList.contains(
+            'elementor-editor-active',
+        );
+        if (inEditor || clickStop || hasTriggeredRedirect || isPopupMode)
+            return;
 
-        const interval = startCountdown(() => {
+        hasTriggeredRedirect = true;
+        startCountdown(() => {
             window.location.href = lineURL;
         });
     };
 
     const cancelRedirect = () => {
         clickStop = true;
-        clearTimeout(interval);
+        hasTriggeredRedirect = true;
+        clearInterval(interval);
         interval = null;
-        autoRedirectPopup?.classList.remove('show-popup');
+        widget.classList.remove('show-popup');
+        widget.classList.add('dismissed');
     };
 
     const handlePopupOnScroll = () => {
-        if (!autoRedirectPopup || clickStop) return;
+        if (!isPopupMode || clickStop) return;
 
-        const percentTrigger = parseFloat(
-            autoRedirectPopup.getAttribute('data-percent')
-        );
+        const percentTrigger = parseFloat(widget.getAttribute('data-percent'));
 
         if (isNaN(percentTrigger) || percentTrigger < 0 || percentTrigger > 100)
             return;
@@ -60,7 +76,7 @@ function ScrollToRedirect() {
             const scrolledPercent = (scrollPos / totalHeight) * 100;
 
             if (scrolledPercent >= percentTrigger) {
-                autoRedirectPopup.classList.add('show-popup');
+                widget.classList.add('show-popup');
                 window.removeEventListener('scroll', onScroll); // only trigger once
             }
         };
@@ -71,15 +87,21 @@ function ScrollToRedirect() {
     const initObserver = () => {
         const observer = new IntersectionObserver((entries) => {
             for (const entry of entries) {
-                if (entry.isIntersecting) handleRedirectTrigger();
+                if (entry.isIntersecting) {
+                    handleRedirectTrigger();
+                    observer.unobserve(entry.target);
+                }
             }
         }, options);
 
-        redirectTargets.forEach((el) => observer.observe(el));
+        observer.observe(widget);
     };
 
     // Setup listeners and observers
-    initObserver();
+    if (!isPopupMode) {
+        initObserver();
+    }
+
     handlePopupOnScroll();
 
     cancelBtn?.addEventListener('click', cancelRedirect);
@@ -90,7 +112,7 @@ window.addEventListener('DOMContentLoaded', () => {
     jQuery(window).on('elementor/frontend/init', () => {
         elementorFrontend.hooks.addAction(
             'frontend/element_ready/scroll-to-redirect.default',
-            ScrollToRedirect
+            ScrollToRedirect,
         );
     });
 });

@@ -257,18 +257,20 @@ class ScrollToRedirect extends Widget_Base{
       // Redirect target and scroll percent
       $redirect_url = !empty($settings['redirect-url']['url']) ? esc_url($settings['redirect-url']['url']) : '#';
       $button_url = !empty($settings['button-url']['url']) ? esc_url($settings['button-url']['url']) : '#';
-      $scroll_percent = isset($settings['redirect-popup-scroll-percent']) ? esc_attr($settings['redirect-popup-scroll-percent']) : '0';
+      $scroll_percent = isset($settings['redirect-popup-scroll-percent']) ? max(0, min(100, floatval($settings['redirect-popup-scroll-percent']))) : 0;
+      $button_text = !empty($settings['button-text']) ? sanitize_text_field($settings['button-text']) : __('กดรับโปรโมชั่น', 'scroll-to-redirect');
+      $widget_mode = !empty($settings['type-switch']) ? 'popup' : 'inline';
   
       // Build final class string
       $class_attr = implode(' ', $classes);
       ?>
   
-      <div class="<?php echo esc_attr($class_attr); ?>" data-to="<?php echo $redirect_url; ?>" data-percent="<?php echo esc_attr($scroll_percent); ?>">
+      <div class="<?php echo esc_attr($class_attr); ?>" data-to="<?php echo esc_url($redirect_url); ?>" data-percent="<?php echo esc_attr($scroll_percent); ?>" data-mode="<?php echo esc_attr($widget_mode); ?>">
   
           <?php if (!empty($settings['image-switch']) && $settings['image-switch'] === 'true') : ?>
               <img 
                   src="<?php echo esc_url(plugin_dir_url(__DIR__) . 'includes/image/line-logo-new.png'); ?>" 
-                  alt="<?php esc_attr_e('Line Logo', 'text-domain'); ?>" 
+                    alt="<?php esc_attr_e('Line Logo', 'scroll-to-redirect'); ?>" 
                   class="line-logo" 
               />
           <?php endif; ?>
@@ -285,17 +287,17 @@ class ScrollToRedirect extends Widget_Base{
   
           <div class="redirect-footer">
               <a class="button button-line button-redirect" href="<?php echo $button_url ?: $redirect_url; ?>">
-                  <?php esc_html_e('กดรับโปรโมชั่น', 'text-domain'); ?>
+                <?php echo esc_html($button_text); ?>
               </a>
   
               <?php if (!empty($settings['close-switch']) && $settings['close-switch'] === 'true') : ?>
-                  <button class="button button-cancel" aria-label="<?php esc_attr_e('ปิดปุ่ม', 'text-domain'); ?>">
+                <button class="button button-cancel" aria-label="<?php esc_attr_e('ปิดปุ่ม', 'scroll-to-redirect'); ?>">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-hidden="true">
                           <rect width="256" height="256" fill="none" />
                           <line x1="200" y1="56" x2="56" y2="200" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" />
                           <line x1="200" y1="200" x2="56" y2="56" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" />
                       </svg>
-                      <?php esc_html_e('ปฏิเสธ', 'text-domain'); ?> <span class="cancel-countdown"></span>
+                  <?php esc_html_e('ปฏิเสธ', 'scroll-to-redirect'); ?> <span class="cancel-countdown"></span>
                   </button>
               <?php endif; ?>
           </div>

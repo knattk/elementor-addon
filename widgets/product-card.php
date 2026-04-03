@@ -18,8 +18,12 @@ class ProductCard extends Widget_Base{
   }
 
   public function get_title(){
-    return 'Product Card';
+    return 'Product Card (Deprecated)';
   }
+
+  public function show_in_panel() {
+        return false;
+}
 
   public function get_icon(){
     return 'eicon-accordion';
@@ -370,13 +374,13 @@ class ProductCard extends Widget_Base{
             'type' => Controls_Manager::DIMENSIONS,
             'size_units' => [ 'px', '%', 'em', 'rem' ],
             'selectors' => [
-                '{{WRAPPER}} .product-card-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                '{{WRAPPER}} .product-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
             ],
         ]
     );
     /* Title */
     $this->add_control(
-        'style_content_title',
+        'style_content_title_heading',
         [
             'label' => __( 'Title', 'product-card' ),
             'type' => Controls_Manager::HEADING,
@@ -401,7 +405,7 @@ class ProductCard extends Widget_Base{
                 'type' 			=> Controls_Manager::COLOR,
                 'default'       => '#000',
                 'selectors'		=> [
-                    '{{WRAPPER}} .card-title' => 'color: {{VALUE}};'
+                    '{{WRAPPER}} .product-name' => 'color: {{VALUE}};'
                 ]
             ]
         );

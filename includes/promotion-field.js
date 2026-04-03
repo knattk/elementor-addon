@@ -15,19 +15,19 @@ function PromotionField() {
         promotionData.promotion.id = element.getAttribute('promotion-id');
         promotionData.promotion.title = getInnerHTML(
             element,
-            '.promotion-title'
+            '.promotion-title',
         );
         promotionData.promotion.item = getInnerHTML(
             element,
-            '.promotion-items'
+            '.promotion-items',
         );
         promotionData.promotion.pricereg = getInnerHTML(
             element,
-            '.regular-price'
+            '.regular-price',
         );
         promotionData.promotion.pricesale = getInnerHTML(
             element,
-            '.sale-price'
+            '.sale-price',
         );
     };
 
@@ -114,7 +114,7 @@ window.addEventListener('DOMContentLoaded', () => {
     jQuery(window).on('elementor/frontend/init', () => {
         elementorFrontend.hooks.addAction(
             'frontend/element_ready/promotion-field.default',
-            PromotionField
+            PromotionField,
         );
     });
 });

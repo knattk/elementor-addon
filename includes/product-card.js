@@ -1,64 +1,103 @@
+// Initialize product card behavior and widget integrations.
 function productCard() {
-    //Global variable
-    var promotionData = {
+    const STORAGE_KEY = 'formPass';
+    const DEFAULT_PROMOTION_DATA = {
         promotion: { id: '', title: '', item: '', pricereg: '', pricesale: '' },
         duedate: '',
         name: '',
         phone: '',
     };
-    var countdown = { days: '00', hours: '00', minutes: '00', seconds: '00' };
+    const countdown = { days: '00', hours: '00', minutes: '00', seconds: '00' };
+    let promotionData = { ...DEFAULT_PROMOTION_DATA };
 
     const card1 = document.querySelector('.product-card');
     const buttons = document.querySelectorAll('.product-button');
     const fieldGroup = document.querySelector('.elementor-field-group-field_1');
     const promotionFields = document.querySelectorAll('.promotion-field'); // Promotion Field Widget support
 
-    const promotionDataSet = (parent) => {
-        promotionData.promotion.id = parent.getAttribute('product-id');
-        promotionData.promotion.title = parent.getElementsByTagName('h3')[0]
-            ? parent.getElementsByTagName('h3')[0].innerHTML
-            : '';
-        promotionData.promotion.item = parent.querySelector('.product-items')
-            ? parent.querySelector('.product-items').innerHTML
-            : '';
-        promotionData.promotion.pricereg = parent.querySelector(
-            '.regular-price'
-        )
-            ? parent.querySelector('.regular-price').innerHTML
-            : '';
-        promotionData.promotion.pricesale = parent.querySelector('.sale-price')
-            ? parent.querySelector('.sale-price').innerHTML
-            : '';
-    };
-
-    const localStorageInitialize = (receiver, key) => {
-        if (localStorage.getItem(key)) {
-            receiver = JSON.parse(localStorage[key]);
+    // Copy selected product details into the shared state object.
+    const setPromotionData = (parent) => {
+        if (!parent) {
+            return;
         }
+
+        const titleElement = parent.querySelector('h3');
+        const itemElement = parent.querySelector('.product-items');
+        const regularPriceElement = parent.querySelector('.regular-price');
+        const salePriceElement = parent.querySelector('.sale-price');
+
+        promotionData.promotion.id = parent.getAttribute('product-id') || '';
+        promotionData.promotion.title = titleElement
+            ? titleElement.innerHTML
+            : '';
+        promotionData.promotion.item = itemElement ? itemElement.innerHTML : '';
+        promotionData.promotion.pricereg = regularPriceElement
+            ? regularPriceElement.innerHTML
+            : '';
+        promotionData.promotion.pricesale = salePriceElement
+            ? salePriceElement.innerHTML
+            : '';
     };
 
-    const localStorageUpdate = (source, key) => {
-        localStorage.setItem(key, JSON.stringify(source));
-    };
-
-    const checkTypeOfFiled = (field) => {
-        if (field) {
-            if (field.classList.contains('elementor-field-type-textarea')) {
-                return 'textarea';
-            } else if (field.classList.contains('elementor-field-type-radio')) {
-                return 'radio';
-            } else if (
-                field.classList.contains('elementor-field-type-checkbox')
-            ) {
-                return 'checkbox';
-            } else if (
-                field.classList.contains('elementor-field-type-select')
-            ) {
-                return 'dropdown';
-            } else {
-                return null;
+    // Load stored promotion state and safely merge defaults.
+    const loadPromotionData = () => {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) {
+                promotionData = {
+                    ...DEFAULT_PROMOTION_DATA,
+                    promotion: { ...DEFAULT_PROMOTION_DATA.promotion },
+                };
+                return;
             }
+
+            const parsedData = JSON.parse(raw);
+            promotionData = {
+                ...DEFAULT_PROMOTION_DATA,
+                ...parsedData,
+                promotion: {
+                    ...DEFAULT_PROMOTION_DATA.promotion,
+                    ...(parsedData && parsedData.promotion
+                        ? parsedData.promotion
+                        : {}),
+                },
+            };
+        } catch (error) {
+            promotionData = {
+                ...DEFAULT_PROMOTION_DATA,
+                promotion: { ...DEFAULT_PROMOTION_DATA.promotion },
+            };
         }
+    };
+
+    // Persist latest promotion state for cross-widget usage.
+    const savePromotionData = () => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(promotionData));
+    };
+
+    // Detect supported Elementor field type for field_1.
+    const getFieldType = (field) => {
+        if (!field) {
+            return null;
+        }
+
+        if (field.classList.contains('elementor-field-type-textarea')) {
+            return 'textarea';
+        }
+
+        if (field.classList.contains('elementor-field-type-radio')) {
+            return 'radio';
+        }
+
+        if (field.classList.contains('elementor-field-type-checkbox')) {
+            return 'checkbox';
+        }
+
+        if (field.classList.contains('elementor-field-type-select')) {
+            return 'dropdown';
+        }
+
+        return null;
     };
 
     /*
@@ -67,19 +106,21 @@ function productCard() {
      *
      */
 
+    // Initialize initial product data and sync form field value.
     const init = () => {
-        // Get data from "formPass" then put it into ${promotionData}
-        localStorageInitialize(promotionData, 'formPass');
+        loadPromotionData();
 
-        promotionDataSet(card1);
+        setPromotionData(card1);
 
         // Update field_1
-        if (checkTypeOfFiled(fieldGroup) == 'textarea') {
-            fieldGroup.getElementsByTagName('textarea')[0].value =
-                promotionData.promotion.title;
+        if (getFieldType(fieldGroup) === 'textarea') {
+            const textarea = fieldGroup.querySelector('textarea');
+            if (textarea) {
+                textarea.value = promotionData.promotion.title;
+            }
         }
 
-        localStorageUpdate(promotionData, 'formPass');
+        savePromotionData();
     };
 
     /*
@@ -88,71 +129,87 @@ function productCard() {
      *
      */
 
-    const countdowmController = () => {
+    // Sync countdown values from available countdown widgets.
+    const countdownController = () => {
         // Update the count down every 1 second
-        const x = setInterval(function () {
-            const ElementorCountdownWrapper = document.querySelector(
-                '.elementor-countdown-wrapper'
+        setInterval(() => {
+            const elementorCountdownWrapper = document.querySelector(
+                '.elementor-countdown-wrapper',
             );
-            const AutoCountdownWrapper =
+            const autoCountdownWrapper =
                 document.querySelector('.countdown-wrapper');
 
             // Elementor Pro Countdown widget
-            if (ElementorCountdownWrapper !== null) {
-                countdown.days = ElementorCountdownWrapper.querySelector(
-                    '.elementor-countdown-days'
-                ).innerHTML;
-                countdown.hours = ElementorCountdownWrapper.querySelector(
-                    '.elementor-countdown-hours'
-                ).innerHTML;
-                countdown.minutes = ElementorCountdownWrapper.querySelector(
-                    '.elementor-countdown-minutes'
-                ).innerHTML;
-                countdown.seconds = ElementorCountdownWrapper.querySelector(
-                    '.elementor-countdown-seconds'
-                ).innerHTML;
+            if (elementorCountdownWrapper !== null) {
+                const daysElement = elementorCountdownWrapper.querySelector(
+                    '.elementor-countdown-days',
+                );
+                const hoursElement = elementorCountdownWrapper.querySelector(
+                    '.elementor-countdown-hours',
+                );
+                const minutesElement = elementorCountdownWrapper.querySelector(
+                    '.elementor-countdown-minutes',
+                );
+                const secondsElement = elementorCountdownWrapper.querySelector(
+                    '.elementor-countdown-seconds',
+                );
+
+                countdown.days = daysElement
+                    ? daysElement.textContent || '00'
+                    : '00';
+                countdown.hours = hoursElement
+                    ? hoursElement.textContent || '00'
+                    : '00';
+                countdown.minutes = minutesElement
+                    ? minutesElement.textContent || '00'
+                    : '00';
+                countdown.seconds = secondsElement
+                    ? secondsElement.textContent || '00'
+                    : '00';
             } // Countdown Auto widget
-            else if (AutoCountdownWrapper !== null) {
+            else if (autoCountdownWrapper !== null) {
+                const hoursElement =
+                    autoCountdownWrapper.querySelector('.countdown-hours');
+                const minutesElement =
+                    autoCountdownWrapper.querySelector('.countdown-minutes');
+                const secondsElement =
+                    autoCountdownWrapper.querySelector('.countdown-seconds');
+
                 countdown.days = '00';
-                countdown.hours =
-                    AutoCountdownWrapper.querySelector(
-                        '.countdown-hours'
-                    ).innerHTML;
-                countdown.minutes =
-                    AutoCountdownWrapper.querySelector(
-                        '.countdown-minutes'
-                    ).innerHTML;
-                countdown.seconds =
-                    AutoCountdownWrapper.querySelector(
-                        '.countdown-seconds'
-                    ).innerHTML;
+                countdown.hours = hoursElement
+                    ? hoursElement.textContent || '00'
+                    : '00';
+                countdown.minutes = minutesElement
+                    ? minutesElement.textContent || '00'
+                    : '00';
+                countdown.seconds = secondsElement
+                    ? secondsElement.textContent || '00'
+                    : '00';
             }
 
-            let productCountdown = {
+            const productCountdown = {
                 days: document.querySelectorAll('.product-countdown-days'),
                 hours: document.querySelectorAll('.product-countdown-hours'),
                 minutes: document.querySelectorAll(
-                    '.product-countdown-minutes'
+                    '.product-countdown-minutes',
                 ),
                 seconds: document.querySelectorAll(
-                    '.product-countdown-seconds'
+                    '.product-countdown-seconds',
                 ),
             };
 
             productCountdown.days.forEach((element) => {
-                element.innerHTML = countdown.days;
+                element.textContent = countdown.days;
             });
             productCountdown.hours.forEach((element) => {
-                element.innerHTML = countdown.hours;
+                element.textContent = countdown.hours;
             });
             productCountdown.minutes.forEach((element) => {
-                element.innerHTML = countdown.minutes;
+                element.textContent = countdown.minutes;
             });
             productCountdown.seconds.forEach((element) => {
-                element.innerHTML = countdown.seconds;
+                element.textContent = countdown.seconds;
             });
-
-            return countdown;
         }, 1000);
     };
 
@@ -162,28 +219,27 @@ function productCard() {
      *
      */
 
+    // Update stock progress bars based on countdown state.
     const progressBarController = () => {
         const progressBar = document.querySelectorAll('.progress');
-        const timeout = setTimeout(() => {
+        setTimeout(() => {
             progressBar.forEach((element) => {
-                if (countdown.days == '03') {
+                if (countdown.days === '03') {
                     element.style.width = '42%';
                     element.setAttribute('value', 42);
                 }
-                if (countdown.days == '02') {
+                if (countdown.days === '02') {
                     element.style.width = '46%';
                     element.setAttribute('value', 46);
-                } else if (countdown.days == '01') {
+                } else if (countdown.days === '01') {
                     element.style.width = '54%';
                     element.setAttribute('value', 54);
-                } else if (countdown.days == '00') {
-                    let getHours = countdown.hours;
-
-                    parseInt(getHours);
-                    let stock = 50;
-                    let lastHour = 20; // 20 = 20.00, 4 = 4.00
-                    let sold = (stock / lastHour) * (24 - parseInt(getHours));
-                    let totalSale = stock + sold <= 100 ? stock + sold : 100;
+                } else if (countdown.days === '00') {
+                    const hours = Number.parseInt(countdown.hours, 10) || 0;
+                    const stock = 50;
+                    const lastHour = 20; // 20 = 20.00, 4 = 4.00
+                    const sold = (stock / lastHour) * (24 - hours);
+                    const totalSale = stock + sold <= 100 ? stock + sold : 100;
                     element.style.width = totalSale + '%';
                     element.setAttribute('value', totalSale);
                 } else {
@@ -191,16 +247,20 @@ function productCard() {
                     element.setAttribute('value', 16);
                 }
 
-                let progressValue = element.getAttribute('value');
-                let progressText = element.querySelector('.progress-text');
+                const progressValue = Number(element.getAttribute('value'));
+                const progressText = element.querySelector('.progress-text');
+                if (!progressText) {
+                    return;
+                }
+
                 if (progressValue > 99) {
-                    progressText.innerHTML = 'เหลือ 1 เซตสุดท้าย';
+                    progressText.textContent = 'เหลือ 1 เซตสุดท้าย';
                 } else if (progressValue > 90) {
-                    progressText.innerHTML = 'เหลือน้อยกว่า 3 เซต';
+                    progressText.textContent = 'เหลือน้อยกว่า 3 เซต';
                 } else if (progressValue > 50) {
-                    progressText.innerHTML = 'ใกล้จะหมด';
+                    progressText.textContent = 'ใกล้จะหมด';
                 } else if (progressValue > 40) {
-                    progressText.innerHTML = 'ขายดี';
+                    progressText.textContent = 'ขายดี';
                 }
             });
         }, 1000);
@@ -212,6 +272,7 @@ function productCard() {
      *
      */
 
+    // Handle expand/collapse interactions for product item lists.
     const productToggleController = () => {
         const productToggles = document.querySelectorAll('.product-toggle');
 
@@ -220,19 +281,23 @@ function productCard() {
                 const relatedProductItems = toggle
                     .closest('.product-content')
                     .querySelector('.product-items');
+
+                if (!relatedProductItems) {
+                    return;
+                }
+
                 if (relatedProductItems.classList.contains('visible')) {
                     toggle.classList.add('rotate');
                 }
 
-                toggle.addEventListener('click', (event) => {
+                toggle.addEventListener('click', () => {
                     try {
-                        console.log('click');
                         toggle.classList.toggle('rotate');
                         relatedProductItems.classList.toggle('visible');
                     } catch (error) {
                         console.error(
                             'Error toggling product items visibility:',
-                            error
+                            error,
                         );
                     }
                 });
@@ -246,11 +311,17 @@ function productCard() {
      *
      */
 
+    // Save clicked product details and reflect selection in form inputs.
     const setLocalProductDetail = () => {
         buttons.forEach((item) => {
             item.addEventListener('click', () => {
-                let card = item.closest('.product-card'); // button's parent
-                let productId = card.getAttribute('product-id'); // this card's product-id
+                const card = item.closest('.product-card'); // button's parent
+                if (!card) {
+                    return;
+                }
+
+                const productId = card.getAttribute('product-id'); // this card's product-id
+                const productIndex = Number.parseInt(productId, 10);
 
                 /*
                  *
@@ -258,14 +329,13 @@ function productCard() {
                  *
                  */
 
-                // Get data from "formPass" then put it into ${promotionData}
-                localStorageInitialize(promotionData, 'formPass');
+                loadPromotionData();
 
                 // Set ${promotionData} value from this card's data
-                promotionDataSet(card);
+                setPromotionData(card);
 
                 // Update localStorage
-                localStorageUpdate(promotionData, 'formPass');
+                savePromotionData();
 
                 /*
                  *
@@ -273,19 +343,24 @@ function productCard() {
                  *
                  */
 
-                switch (checkTypeOfFiled(fieldGroup)) {
+                switch (getFieldType(fieldGroup)) {
                     case 'textarea':
-                        fieldGroup.getElementsByTagName('textarea')[0].value =
-                            promotionData.promotion.title;
+                        if (fieldGroup) {
+                            const textarea =
+                                fieldGroup.querySelector('textarea');
+                            if (textarea) {
+                                textarea.value = promotionData.promotion.title;
+                            }
+                        }
 
                         // Update field_1 selected item
-                        if (promotionFields) {
+                        if (promotionFields.length > 0) {
                             promotionFields.forEach((element) => {
                                 element.classList.remove('selected');
 
-                                let fieldPromotionId =
+                                const fieldPromotionId =
                                     element.getAttribute('promotion-id');
-                                if (productId == fieldPromotionId) {
+                                if (productId === fieldPromotionId) {
                                     element.classList.add('selected');
                                 }
                             });
@@ -294,9 +369,14 @@ function productCard() {
                         break;
 
                     case 'radio':
-                        document.getElementById(
-                            'form-field-field_1-' + (productId - 1)
-                        ).checked = true;
+                        if (!Number.isNaN(productIndex)) {
+                            const radioField = document.getElementById(
+                                'form-field-field_1-' + (productIndex - 1),
+                            );
+                            if (radioField) {
+                                radioField.checked = true;
+                            }
+                        }
 
                         break;
 
@@ -305,9 +385,13 @@ function productCard() {
                         break;
 
                     case 'dropdown':
-                        document.getElementById(
-                            'form-field-field_1'
-                        ).selectedIndex = productId - 1;
+                        if (!Number.isNaN(productIndex)) {
+                            const dropdownField =
+                                document.getElementById('form-field-field_1');
+                            if (dropdownField) {
+                                dropdownField.selectedIndex = productIndex - 1;
+                            }
+                        }
                         break;
 
                     default: {
@@ -324,6 +408,7 @@ function productCard() {
      *
      */
 
+    // Store submitted customer info alongside the selected promotion.
     const formDataToLocalStorage = () => {
         const formThank = document.querySelector('[id*="thank"]'); // Form
 
@@ -334,41 +419,41 @@ function productCard() {
             const form = document.getElementById(formThank.id);
             const formField2 = document.getElementById('form-field-field_2');
             const formField3 = document.getElementById('form-field-field_3');
+            if (!form) {
+                return;
+            }
 
-            form.addEventListener('submit', function () {
-                // Get data from "formPass" then put it into ${promotionData}
-                localStorageInitialize(promotionData, 'formPass');
+            form.addEventListener('submit', () => {
+                loadPromotionData();
 
                 // add input data into ${promotionData}
                 promotionData.name = formField2 ? formField2.value : null; // name
                 promotionData.phone = formField3 ? formField3.value : null; // phone
 
                 // Update localStorage
-                localStorageUpdate(promotionData, 'formPass');
+                savePromotionData();
             }); // End Even Listener
         }
     };
 
     try {
         init();
-        countdowmController();
+        countdownController();
         progressBarController();
         productToggleController();
         setLocalProductDetail();
-
-        if (promotionFields !== null || promotionFields.length === 0) {
-            formDataToLocalStorage();
-        }
+        formDataToLocalStorage();
     } catch (error) {
         console.log(error);
     }
 }
 
-window.addEventListener('DOMContentLoaded', (event) => {
+// Register productCard when Elementor frontend is ready.
+window.addEventListener('DOMContentLoaded', () => {
     jQuery(window).on('elementor/frontend/init', () => {
         elementorFrontend.hooks.addAction(
             'frontend/element_ready/product-card.default',
-            productCard
+            productCard,
         );
     });
 });

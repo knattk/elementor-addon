@@ -14,7 +14,11 @@ class VideoSender extends Widget_Base{
     }
 
     public function get_title(){
-        return 'Video Sender';
+        return 'Video Sender (Deprecated)';
+    }
+
+    public function show_in_panel() {
+        return false;
     }
 
     public function get_icon(){

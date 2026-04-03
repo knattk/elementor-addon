@@ -3,7 +3,7 @@
 * Plugin Name: Elementor Addon
 * Plugin URI: https://khwaan.com
 * Description: Elementor Addon
-* Version: 2.3.4
+* Version: 2.4.0
 * Author: Nattakan C.
 * Author URI: https://khwaan.com
 **/
@@ -49,21 +49,33 @@ class Widget_Loader{
 
   }
 
+  private function get_plugin_version() {
+
+    $plugin_data = get_file_data( __FILE__, [ 'Version' => 'Version' ], 'plugin' );
+
+    return ! empty( $plugin_data['Version'] ) ? $plugin_data['Version'] : false;
+
+  }
+
   public function widget_styles() {
 
-    wp_register_style( 'elmta-style-css', plugins_url( '/includes/style.css', __FILE__ ) );
-    wp_register_style( 'elmta-video-css', plugins_url( '/includes/video.css', __FILE__ ) );
+    $version = $this->get_plugin_version();
+
+    wp_register_style( 'elmta-style-css', plugins_url( '/includes/style.css', __FILE__ ), [], $version );
+    wp_register_style( 'elmta-video-css', plugins_url( '/includes/video.css', __FILE__ ), [], $version );
 
 
   }
   public function widget_scripts() {
 
-    wp_register_script( 'elmta-promotion-field-js', plugins_url( '/includes/promotion-field.js', __FILE__ ) );
-    wp_register_script( 'elmta-product-card-js', plugins_url( '/includes/product-card.js', __FILE__ ) );
-    wp_register_script( 'elmta-countdown-auto-js', plugins_url( '/includes/countdown-auto.js', __FILE__ ) );
-    wp_register_script( 'elmta-user-review-js', plugins_url( '/includes/user-review.js', __FILE__ ) );
-    wp_register_script( 'elmta-video-receiver-js', plugins_url( '/includes/video-receiver.js', __FILE__ ) );
-    wp_register_script( 'elmta-scroll-to-redirect-js', plugins_url( '/includes/scroll-to-redirect.js', __FILE__ ) );
+    $version = $this->get_plugin_version();
+
+    wp_register_script( 'elmta-promotion-field-js', plugins_url( '/includes/promotion-field.js', __FILE__ ), [], $version );
+    wp_register_script( 'elmta-product-card-js', plugins_url( '/includes/product-card.js', __FILE__ ), [], $version );
+    wp_register_script( 'elmta-countdown-auto-js', plugins_url( '/includes/countdown-auto.js', __FILE__ ), [], $version );
+    wp_register_script( 'elmta-user-review-js', plugins_url( '/includes/user-review.js', __FILE__ ), [], $version );
+    wp_register_script( 'elmta-video-receiver-js', plugins_url( '/includes/video-receiver.js', __FILE__ ), [], $version );
+    wp_register_script( 'elmta-scroll-to-redirect-js', plugins_url( '/includes/scroll-to-redirect.js', __FILE__ ), [], $version );
     
   }
 

@@ -14,7 +14,11 @@ class VideoReceiver extends Widget_Base{
     }
 
     public function get_title(){
-        return 'Video Receiver';
+        return 'Video Receiver (Deprecated)';
+    }
+
+    public function show_in_panel() {
+        return false;
     }
 
     public function get_icon(){

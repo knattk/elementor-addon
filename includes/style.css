@@ -590,6 +590,7 @@ display: none;
 */
 
 .scroll-to-redirect {
+  position: relative;
   text-align: center;
   padding: 2rem 1rem;
   /* background: #f9f9f9; */
@@ -618,35 +619,45 @@ display: none;
 }
 .scroll-to-redirect .button-cancel {
   position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: #fff;
-    color: #6E6E6E;
-    border: 1px solid #6E6E6E;
-    border-radius: 30px;
-    width: fit-content;
-    height: auto;
-    cursor: pointer;
-    z-index: 2;
-    display: flex
-;
-    align-items: center;
-    justify-content: center;
-	font-size:13px;
-	padding:0 5px;
+  top: 1rem;
+  right: 1rem;
+  background: #fff;
+  color: #6E6E6E;
+  border: 1px solid #6E6E6E;
+  border-radius: 30px;
+  width: fit-content;
+  height: auto;
+  cursor: pointer;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  padding: 0 5px;
 }
 .scroll-to-redirect .button-cancel svg{
 	width:18px;
 	height:18px;
 }
 .scroll-to-redirect .button-redirect {
+  display: inline-block;
+  text-decoration: none;
   background: #07B53B;
   color: #fff;
   border: none;
   border-radius: 10px;
   padding: 0.5rem 1.5rem;
   font-size: 1.4rem;
-  
+}
+
+.scroll-to-redirect .button-redirect:hover {
+  filter: brightness(0.95);
+}
+
+.scroll-to-redirect .button-redirect:focus-visible,
+.scroll-to-redirect .button-cancel:focus-visible {
+  outline: 2px solid #0c8f32;
+  outline-offset: 2px;
 }
 .scroll-to-redirect .redirect-footer {
   display: flex;
@@ -661,9 +672,20 @@ display: none;
   background: red!important;
   display: none;
 }
+
+.scroll-to-redirect.dismissed {
+  display: none !important;
+}
+
 @keyframes rolling {
   100%{
     transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-to-redirect .icon i {
+    animation: none;
   }
 }
 
