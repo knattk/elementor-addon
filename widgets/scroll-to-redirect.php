@@ -217,7 +217,17 @@ class ScrollToRedirect extends Widget_Base{
         Group_Control_Typography::get_type(),
         [
           'name' => 'description_typography',
-          'selector' => '{{WRAPPER}} :is(p,a,button,span)',
+          'selector' => '{{WRAPPER}} :is(p,span)',
+          'global' => [
+            'default' => Global_Typography::TYPOGRAPHY_TEXT,
+          ],
+        ]
+      );
+      $this->add_group_control(
+        Group_Control_Typography::get_type(),
+        [
+          'name' => 'button_typography',
+          'selector' => '{{WRAPPER}} a',
           'global' => [
             'default' => Global_Typography::TYPOGRAPHY_TEXT,
           ],
@@ -274,15 +284,17 @@ class ScrollToRedirect extends Widget_Base{
                   class="line-logo" 
               />
           <?php endif; ?>
-  
+          
+          <h4 class="redirect-heading">เพิ่มเพื่อนรับโปร</h4>
           <?php if (!empty($settings['description'])) : ?>
               <p class="description"><?php echo wp_kses_post($settings['description']); ?></p>
           <?php endif; ?>
   
           <?php if (!empty($settings['redirect-icon'])) : ?>
-              <div class="icon">
+              <!-- <div class="icon">
                   <?php \Elementor\Icons_Manager::render_icon($settings['redirect-icon'], ['aria-hidden' => 'true']); ?>
-              </div>
+              </div> -->
+              <span class="loader"></span>
           <?php endif; ?>
   
           <div class="redirect-footer">
@@ -297,7 +309,7 @@ class ScrollToRedirect extends Widget_Base{
                           <line x1="200" y1="56" x2="56" y2="200" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" />
                           <line x1="200" y1="200" x2="56" y2="56" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" />
                       </svg>
-                  <?php esc_html_e('ปฏิเสธ', 'scroll-to-redirect'); ?> <span class="cancel-countdown"></span>
+                  <?php esc_html_e('ยกเลิก', 'scroll-to-redirect'); ?> <span class="cancel-countdown"></span>
                   </button>
               <?php endif; ?>
           </div>
