@@ -740,6 +740,7 @@ display: none;
 
 .auto-redirect-popup .cancel-countdown{
 	margin-left:5px;
+  margin-bottom: -2px;
 }
 
 .loader {
