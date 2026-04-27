@@ -44,8 +44,7 @@ function ScrollToRedirect($scope) {
         const inEditor = document.body.classList.contains(
             'elementor-editor-active',
         );
-        if (inEditor || clickStop || hasTriggeredRedirect || isPopupMode)
-            return;
+        if (inEditor || clickStop || hasTriggeredRedirect) return;
 
         hasTriggeredRedirect = true;
         startCountdown(() => {
@@ -98,9 +97,9 @@ function ScrollToRedirect($scope) {
     };
 
     // Setup listeners and observers
-    if (!isPopupMode) {
-        initObserver();
-    }
+    // if (!isPopupMode) {
+    initObserver();
+    // }
 
     handlePopupOnScroll();
 
